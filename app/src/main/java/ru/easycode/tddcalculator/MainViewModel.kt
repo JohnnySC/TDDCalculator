@@ -27,6 +27,10 @@ class MainViewModel : ViewModel(), MainActions {
         inputMutableFlow.value = before + right
     }
 
+    override fun inputZero() {
+        //todo next step
+    }
+
     override fun plus() {
         val before = inputFlow.value
         val result = "$before+"
