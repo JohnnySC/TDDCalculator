@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.math.exp
 
 @RunWith(AndroidJUnit4::class)
 class ScenarioUiTest {
@@ -12,8 +13,21 @@ class ScenarioUiTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @Test
-    fun scenario_number_one() {
+    private val mainPage = MainPage(composeTestRule)
 
+    @Test
+    fun sum_of_two_numbers() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField(expected = "1")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField(expected = "1+")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField(expected = "1+2")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField(expexted = "1+2")
+        mainPage.assertResult(expected = "3")
     }
 }
