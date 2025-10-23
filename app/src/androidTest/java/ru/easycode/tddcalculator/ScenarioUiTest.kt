@@ -29,4 +29,34 @@ class ScenarioUiTest {
         mainPage.assertInputField(expected = "1+2")
         mainPage.assertResult(expected = "3")
     }
+
+    @Test
+    fun sum_of_two_numbers_corner_case() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField(expected = "1")
+
+        var expected = "1"
+        repeat(9) {
+            mainPage.clickNumberZero()
+            expected += "0"
+            mainPage.assertInputField(expected = expected)
+        }
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField(expected = "1000000000+")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField(expected = "1000000000+2")
+
+        expected = "1000000000+2"
+        repeat(9) {
+            mainPage.clickNumberZero()
+            expected += "0"
+            mainPage.assertInputField(expected = expected)
+        }
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField(expected = "1000000000+2000000000")
+        mainPage.assertResult(expected = "3000000000")
+    }
 }
