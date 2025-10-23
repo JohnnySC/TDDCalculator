@@ -3,6 +3,7 @@ package ru.easycode.tddcalculator
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.math.BigInteger
 
 class MainViewModel : ViewModel(), MainActions {
 
@@ -13,32 +14,40 @@ class MainViewModel : ViewModel(), MainActions {
     val resultFlow: StateFlow<String>
         get() = resultMutableFlow
 
-    private var left: Int = 0
-    private var right: Int = 0
+    private var addToLeft = true
+    private var left: String = ""
+    private var right: String = ""
 
     override fun inputOne() {
-        left = 1
-        inputMutableFlow.value = left.toString()
+        left += "1"
+        inputMutableFlow.value = left
     }
 
     override fun inputTwo() {
-        right = 2
+        right += "2"
         val before = inputFlow.value
         inputMutableFlow.value = before + right
     }
 
     override fun inputZero() {
-        //todo next step
+        if (addToLeft) {
+            left += "0"
+            inputMutableFlow.value = left
+        } else {
+            right += "0"
+            inputMutableFlow.value = "$left+$right"
+        }
     }
 
     override fun plus() {
+        addToLeft = false
         val before = inputFlow.value
         val result = "$before+"
         inputMutableFlow.value = result
     }
 
     override fun calculate() {
-        val result = left + right
+        val result = BigInteger(left).plus(BigInteger(right))
         resultMutableFlow.value = result.toString()
     }
 }
