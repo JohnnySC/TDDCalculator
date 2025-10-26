@@ -84,5 +84,18 @@ class ScenarioUiTest {
 
         mainPage.clickNumberOneButton()
         mainPage.assertInputField(expected = "1")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField(expected = "1+")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField(expected = "1+0")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField(expected = "1+2")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField(expected = "1+2")
+        mainPage.assertResult(expected = "3")
     }
 }
