@@ -82,4 +82,13 @@ class MainViewModelTest {
         assertEquals("0+0", inputFlow.value)
         assertEquals("0", resultFlow.value)
     }
+
+    @Test
+    fun prevent_leading_zeros() {
+        viewModel.inputZero()
+        assertEquals("0", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+    }
 }
