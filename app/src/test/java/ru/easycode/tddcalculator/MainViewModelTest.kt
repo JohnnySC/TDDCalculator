@@ -90,5 +90,18 @@ class MainViewModelTest {
 
         viewModel.inputOne()
         assertEquals("1", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("1+", inputFlow.value)
+
+        viewModel.inputZero()
+        assertEquals("1+0", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("1+2", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("1+2", inputFlow.value)
+        assertEquals("3", resultFlow.value)
     }
 }
