@@ -19,7 +19,11 @@ class MainViewModel : ViewModel(), MainActions {
     private var right: String = ""
 
     override fun inputOne() {
-        left += "1"
+        if (left == "0") {
+            left = "1"
+        } else {
+            left += "1"
+        }
         inputMutableFlow.value = left
     }
 
