@@ -28,9 +28,12 @@ class MainViewModel : ViewModel(), MainActions {
     }
 
     override fun inputTwo() {
-        right += "2"
-        val before = inputFlow.value
-        inputMutableFlow.value = before + right
+        if (right == "0") {
+            right = "2"
+        } else {
+            right += "2"
+        }
+        inputMutableFlow.value = "$left+$right"
     }
 
     override fun inputZero() {
