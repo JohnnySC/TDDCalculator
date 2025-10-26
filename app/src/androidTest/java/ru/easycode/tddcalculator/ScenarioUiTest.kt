@@ -62,10 +62,18 @@ class ScenarioUiTest {
 
     @Test
     fun prevent_multiple_zeros() {
-        mainPage.clickNumberZero()
-        mainPage.assertInputField(expected = "0")
-
-        mainPage.clickNumberZero()
-        mainPage.assertInputField(expected = "0")
+        repeat(10) {
+            mainPage.clickNumberZero()
+            mainPage.assertInputField(expected = "0")
+        }
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField(expected = "0+")
+        repeat(10) {
+            mainPage.clickNumberZero()
+            mainPage.assertInputField(expected = "0+0")
+        }
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField(expected = "0+0")
+        mainPage.assertResult(expected = "0")
     }
 }
