@@ -76,4 +76,13 @@ class ScenarioUiTest {
         mainPage.assertInputField(expected = "0+0")
         mainPage.assertResult(expected = "0")
     }
+
+    @Test
+    fun prevent_leading_zeros() {
+        mainPage.clickNumberZero()
+        mainPage.assertInputField(expected = "0")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField(expected = "1")
+    }
 }
