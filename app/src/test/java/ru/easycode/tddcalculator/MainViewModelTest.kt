@@ -68,10 +68,18 @@ class MainViewModelTest {
 
     @Test
     fun prevent_multiple_zeros() {
-        viewModel.inputZero()
-        assertEquals("0", inputFlow.value)
-
-        viewModel.inputZero()
-        assertEquals("0", inputFlow.value)
+        repeat(10) {
+            viewModel.inputZero()
+            assertEquals("0", inputFlow.value)
+        }
+        viewModel.plus()
+        assertEquals("0+", inputFlow.value)
+        repeat(10) {
+            viewModel.inputZero()
+            assertEquals("0+0", inputFlow.value)
+        }
+        viewModel.calculate()
+        assertEquals("0+0", inputFlow.value)
+        assertEquals("0", resultFlow.value)
     }
 }
