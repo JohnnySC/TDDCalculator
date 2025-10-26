@@ -59,4 +59,13 @@ class ScenarioUiTest {
         mainPage.assertInputField(expected = "1000000000+2000000000")
         mainPage.assertResult(expected = "3000000000")
     }
+
+    @Test
+    fun prevent_multiple_zeros() {
+        mainPage.clickNumberZero()
+        mainPage.assertInputField(expected = "0")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField(expected = "0")
+    }
 }
