@@ -70,11 +70,18 @@ class MainViewModel(
     }
 
     override fun plus() {
-        val before = inputFlow.value
-        if (!before.endsWith("+") && left != "") {
-            addToLeft = false
-            val result = "$before+"
-            inputMutableFlow.value = result
+        if (left.isNotEmpty() && right.isNotEmpty()) {
+            val result = repository.sum(left, right)
+            left = result
+            right = ""
+            inputMutableFlow.value = "$left+"
+        } else {
+            val before = inputFlow.value
+            if (!before.endsWith("+") && left.isNotEmpty()) {
+                addToLeft = false
+                val result = "$before+"
+                inputMutableFlow.value = result
+            }
         }
     }
 
