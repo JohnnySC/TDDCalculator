@@ -154,4 +154,23 @@ class MainViewModelTest {
         assertEquals("2+1", inputFlow.value)
         assertEquals("3", resultFlow.value)
     }
+
+    @Test
+    fun prevent_leading_pluses() {
+        viewModel.plus()
+        assertEquals("", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("1+", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("1+2", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("1+2", inputFlow.value)
+        assertEquals("3", resultFlow.value)
+    }
 }
