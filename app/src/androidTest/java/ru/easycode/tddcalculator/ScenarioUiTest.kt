@@ -169,32 +169,40 @@ class ScenarioUiTest {
 
     @Test
     fun prevent_equals_not_at_the_end() {
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "")
-        mainPage.assertResult("")
+        repeat(3) {
+            mainPage.clickEqualsButton()
+            mainPage.assertInputField(expected = "")
+            mainPage.assertResult("")
+        }
 
         mainPage.clickNumberTwoButton()
         mainPage.assertInputField(expected = "2")
         mainPage.assertResult("")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "2")
-        mainPage.assertResult("")
+        repeat(3) {
+            mainPage.clickEqualsButton()
+            mainPage.assertInputField(expected = "2")
+            mainPage.assertResult("")
+        }
 
         mainPage.clickOperationPlusButton()
         mainPage.assertInputField(expected = "2+")
         mainPage.assertResult("")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "2+")
-        mainPage.assertResult("")
+        repeat(3) {
+            mainPage.clickEqualsButton()
+            mainPage.assertInputField(expected = "2+")
+            mainPage.assertResult("")
+        }
 
         mainPage.clickNumberOneButton()
         mainPage.assertInputField(expected = "2+1")
         mainPage.assertResult("")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "2+1")
-        mainPage.assertResult("3")
+        repeat(3) {
+            mainPage.clickEqualsButton()
+            mainPage.assertInputField(expected = "2+1")
+            mainPage.assertResult("3")
+        }
     }
 }

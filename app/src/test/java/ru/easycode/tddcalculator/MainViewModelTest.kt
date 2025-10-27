@@ -176,32 +176,40 @@ class MainViewModelTest {
 
     @Test
     fun prevent_equals_not_at_the_end() {
-        viewModel.calculate()
-        assertEquals("", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        repeat(3) {
+            viewModel.calculate()
+            assertEquals("", inputFlow.value)
+            assertEquals("", resultFlow.value)
+        }
 
         viewModel.inputTwo()
         assertEquals("2", inputFlow.value)
         assertEquals("", resultFlow.value)
 
-        viewModel.calculate()
-        assertEquals("2", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        repeat(3) {
+            viewModel.calculate()
+            assertEquals("2", inputFlow.value)
+            assertEquals("", resultFlow.value)
+        }
 
         viewModel.plus()
         assertEquals("2+", inputFlow.value)
         assertEquals("", resultFlow.value)
 
-        viewModel.calculate()
-        assertEquals("2+", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        repeat(3) {
+            viewModel.calculate()
+            assertEquals("2+", inputFlow.value)
+            assertEquals("", resultFlow.value)
+        }
 
         viewModel.inputOne()
         assertEquals("2+1", inputFlow.value)
         assertEquals("", resultFlow.value)
 
-        viewModel.calculate()
-        assertEquals("2+1", inputFlow.value)
-        assertEquals("3", resultFlow.value)
+        repeat(3) {
+            viewModel.calculate()
+            assertEquals("2+1", inputFlow.value)
+            assertEquals("3", resultFlow.value)
+        }
     }
 }
