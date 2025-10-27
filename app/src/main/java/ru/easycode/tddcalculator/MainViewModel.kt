@@ -70,7 +70,12 @@ class MainViewModel(
     }
 
     override fun plus() {
-        if (left.isNotEmpty() && right.isNotEmpty()) {
+        if (resultFlow.value.isNotEmpty()) {
+            left = resultFlow.value
+            right = ""
+            inputMutableFlow.value = "$left+"
+            resultMutableFlow.value = ""
+        } else if (left.isNotEmpty() && right.isNotEmpty()) {
             val result = repository.sum(left, right)
             left = result
             right = ""
