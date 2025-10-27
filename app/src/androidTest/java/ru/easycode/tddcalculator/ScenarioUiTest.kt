@@ -168,6 +168,37 @@ class ScenarioUiTest {
     }
 
     @Test
+    fun sum_of_more_than_two_numbers() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("1+")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("1+2")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("3+")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("3+1")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("3+10")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("13+")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("13+2")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("13+2")
+        mainPage.assertResult("15")
+    }
+
+    @Test
     fun prevent_equals_not_at_the_end() {
         repeat(3) {
             mainPage.clickEqualsButton()

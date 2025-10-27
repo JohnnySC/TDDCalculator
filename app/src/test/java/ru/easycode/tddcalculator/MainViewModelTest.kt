@@ -177,6 +177,54 @@ class MainViewModelTest {
     }
 
     @Test
+    fun sum_of_more_than_two_numbers() {
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.plus()
+        assertEquals("1+", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("1+2", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        repeat(3) {
+            viewModel.plus()
+            repository.assertSumCalled(expectedTimes = 1)
+            assertEquals("3+", inputFlow.value)
+            assertEquals("", resultFlow.value)
+        }
+
+        viewModel.inputOne()
+        assertEquals("3+1", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.inputZero()
+        assertEquals("3+10", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        repeat(3) {
+            viewModel.plus()
+            repository.assertSumCalled(expectedTimes = 2)
+            assertEquals("13+", inputFlow.value)
+            assertEquals("", resultFlow.value)
+        }
+
+        viewModel.inputTwo()
+        assertEquals("13+2", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        repeat(3) {
+            viewModel.calculate()
+            repository.assertSumCalled(expectedTimes = 3)
+            assertEquals("13+2", inputFlow.value)
+            assertEquals("15", resultFlow.value)
+        }
+    }
+
+    @Test
     fun prevent_equals_not_at_the_end() {
         repeat(3) {
             viewModel.calculate()
