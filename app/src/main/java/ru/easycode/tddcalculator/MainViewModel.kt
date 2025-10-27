@@ -78,7 +78,9 @@ class MainViewModel : ViewModel(), MainActions {
     }
 
     override fun calculate() {
-        val result = BigInteger(left).plus(BigInteger(right))
-        resultMutableFlow.value = result.toString()
+        if (left.isNotEmpty() && right.isNotEmpty()) {
+            val result = BigInteger(left).plus(BigInteger(right))
+            resultMutableFlow.value = result.toString()
+        }
     }
 }
