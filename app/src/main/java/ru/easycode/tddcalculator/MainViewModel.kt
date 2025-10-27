@@ -3,10 +3,9 @@ package ru.easycode.tddcalculator
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.math.BigInteger
 
 class MainViewModel(
-    private val repository: MainRepository
+    private val repository: MainRepository = MainRepository.Base()
 ) : ViewModel(), MainActions {
 
     private val inputMutableFlow: MutableStateFlow<String> = MutableStateFlow("")
@@ -80,7 +79,7 @@ class MainViewModel(
     }
 
     override fun calculate() {
-        if (left.isNotEmpty() && right.isNotEmpty()) {
+        if (left.isNotEmpty() && right.isNotEmpty() && resultFlow.value.isEmpty()) {
             val result = repository.sum(left, right)
             resultMutableFlow.value = result
         }
