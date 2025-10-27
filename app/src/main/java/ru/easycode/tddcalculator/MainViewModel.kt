@@ -70,7 +70,7 @@ class MainViewModel : ViewModel(), MainActions {
 
     override fun plus() {
         val before = inputFlow.value
-        if (!before.endsWith("+")) {
+        if (!before.endsWith("+") && left != "") {
             addToLeft = false
             val result = "$before+"
             inputMutableFlow.value = result
