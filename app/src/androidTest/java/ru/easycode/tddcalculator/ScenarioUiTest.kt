@@ -16,17 +16,17 @@ class ScenarioUiTest {
 
     @Test
     fun sum_of_two_numbers() {
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "1")
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField(expected = "2")
 
         mainPage.clickOperationPlusButton()
-        mainPage.assertInputField(expected = "1+")
+        mainPage.assertInputField(expected = "2+")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "1+2")
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField(expected = "2+1")
 
         mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "1+2")
+        mainPage.assertInputField(expected = "2+1")
         mainPage.assertResult(expected = "3")
     }
 
