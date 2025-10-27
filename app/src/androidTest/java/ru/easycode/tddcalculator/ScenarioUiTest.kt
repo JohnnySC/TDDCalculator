@@ -31,6 +31,37 @@ class ScenarioUiTest {
     }
 
     @Test
+    fun sum_of_two_numbers_more_complex() {
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField(expected = "2")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField(expected = "21")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField(expected = "210")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField(expected = "2100")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField(expected = "2100+")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField(expected = "2100+1")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField(expected = "2100+10")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField(expected = "2100+102")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField(expected = "2100+102")
+        mainPage.assertResult(expected = "2202")
+    }
+
+    @Test
     fun sum_of_two_numbers_corner_case() {
         mainPage.clickNumberOneButton()
         mainPage.assertInputField(expected = "1")

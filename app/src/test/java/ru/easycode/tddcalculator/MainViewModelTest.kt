@@ -37,6 +37,38 @@ class MainViewModelTest {
     }
 
     @Test
+    fun sum_of_two_numbers_more_complex() {
+        viewModel.inputTwo()
+        assertEquals("2", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("21", inputFlow.value)
+
+        viewModel.inputZero()
+        assertEquals("210", inputFlow.value)
+
+        viewModel.inputZero()
+        assertEquals("2100", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("2100+", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("2100+1", inputFlow.value)
+
+        viewModel.inputZero()
+        assertEquals("2100+10", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("2100+102", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("2100+102", inputFlow.value)
+        assertEquals("2202", resultFlow.value)
+    }
+
+
+    @Test
     fun sum_of_two_numbers_corner_case() {
         viewModel.inputOne()
         assertEquals("1", inputFlow.value)
