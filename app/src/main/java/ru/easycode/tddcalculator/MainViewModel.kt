@@ -5,7 +5,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.math.BigInteger
 
-class MainViewModel : ViewModel(), MainActions {
+class MainViewModel(
+    private val repository: MainRepository
+) : ViewModel(), MainActions {
 
     private val inputMutableFlow: MutableStateFlow<String> = MutableStateFlow("")
     private val resultMutableFlow: MutableStateFlow<String> = MutableStateFlow("")
@@ -78,9 +80,9 @@ class MainViewModel : ViewModel(), MainActions {
     }
 
     override fun calculate() {
-        if (left.isNotEmpty() && right.isNotEmpty() && resultFlow.value.isEmpty()) {
-            val result = BigInteger(left).plus(BigInteger(right))
-            resultMutableFlow.value = result.toString()
+        if (left.isNotEmpty() && right.isNotEmpty()) {
+            val result = repository.sum(left, right)
+            resultMutableFlow.value = result
         }
     }
 }

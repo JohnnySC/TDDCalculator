@@ -7,13 +7,15 @@ import org.junit.Test
 
 class MainViewModelTest {
 
+    private lateinit var repository: FakeMainRepository
     private lateinit var viewModel: MainViewModel
     private lateinit var inputFlow: StateFlow<String>
     private lateinit var resultFlow: StateFlow<String>
 
     @Before
     fun setup() {
-        viewModel = MainViewModel()
+        repository = FakeMainRepository()
+        viewModel = MainViewModel(repository = repository)
         inputFlow = viewModel.inputFlow
         resultFlow = viewModel.resultFlow
         assertEquals("", inputFlow.value)
@@ -211,5 +213,22 @@ class MainViewModelTest {
             assertEquals("2+1", inputFlow.value)
             assertEquals("3", resultFlow.value)
         }
+        repository.assertSumCalled(expectedTimes = 1)
+    }
+}
+
+private class FakeMainRepository(
+    private val base: MainRepository = MainRepository.Base()
+) : MainRepository {
+
+    private var count = 0
+
+    override fun sum(left: String, right: String): String {
+        count++
+        return base.sum(left, right)
+    }
+
+    fun assertSumCalled(expectedTimes: Int) {
+        assertEquals(expectedTimes, count)
     }
 }
