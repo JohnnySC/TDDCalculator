@@ -19,21 +19,39 @@ class MainViewModel : ViewModel(), MainActions {
     private var right: String = ""
 
     override fun inputOne() {
-        if (left == "0") {
-            left = "1"
+        if (addToLeft) {
+            if (left == "0") {
+                left = "1"
+            } else {
+                left += "1"
+            }
+            inputMutableFlow.value = left
         } else {
-            left += "1"
+            if (right == "0") {
+                right = "1"
+            } else {
+                right += "1"
+            }
+            inputMutableFlow.value = "$left+$right"
         }
-        inputMutableFlow.value = left
     }
 
     override fun inputTwo() {
-        if (right == "0") {
-            right = "2"
+        if (addToLeft) {
+            if (left == "0") {
+                left = "2"
+            } else {
+                left += "2"
+            }
+            inputMutableFlow.value = left
         } else {
-            right += "2"
+            if (right == "0") {
+                right = "2"
+            } else {
+                right += "2"
+            }
+            inputMutableFlow.value = "$left+$right"
         }
-        inputMutableFlow.value = "$left+$right"
     }
 
     override fun inputZero() {
