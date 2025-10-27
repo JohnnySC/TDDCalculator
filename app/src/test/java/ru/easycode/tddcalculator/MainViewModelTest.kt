@@ -225,6 +225,54 @@ class MainViewModelTest {
     }
 
     @Test
+    fun sum_after_equals() {
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("1+", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("1+2", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("1+2", inputFlow.value)
+        assertEquals("3", resultFlow.value)
+
+        viewModel.plus()
+        assertEquals("3+", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("3+1", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.calculate()
+        assertEquals("3+1", inputFlow.value)
+        assertEquals("4", resultFlow.value)
+
+        viewModel.plus()
+        assertEquals("4+", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("4+2", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.plus()
+        assertEquals("6+", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("6+1", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.calculate()
+        assertEquals("6+1", inputFlow.value)
+        assertEquals("7", resultFlow.value)
+    }
+
+    @Test
     fun prevent_equals_not_at_the_end() {
         repeat(3) {
             viewModel.calculate()

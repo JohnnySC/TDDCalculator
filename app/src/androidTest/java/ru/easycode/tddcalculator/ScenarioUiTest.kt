@@ -199,6 +199,54 @@ class ScenarioUiTest {
     }
 
     @Test
+    fun sum_after_equals() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("1+")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("1+2")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("1+2")
+        mainPage.assertResult("3")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("3+")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("3+1")
+        mainPage.assertResult("")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("3+1")
+        mainPage.assertResult("4")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("4+")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("4+2")
+        mainPage.assertResult("")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("6+")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("6+1")
+        mainPage.assertResult("")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("6+1")
+        mainPage.assertResult("7")
+    }
+
+    @Test
     fun prevent_equals_not_at_the_end() {
         repeat(3) {
             mainPage.clickEqualsButton()
