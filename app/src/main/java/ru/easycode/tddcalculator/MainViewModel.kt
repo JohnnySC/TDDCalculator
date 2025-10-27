@@ -69,10 +69,12 @@ class MainViewModel : ViewModel(), MainActions {
     }
 
     override fun plus() {
-        addToLeft = false
         val before = inputFlow.value
-        val result = "$before+"
-        inputMutableFlow.value = result
+        if (!before.endsWith("+")) {
+            addToLeft = false
+            val result = "$before+"
+            inputMutableFlow.value = result
+        }
     }
 
     override fun calculate() {
