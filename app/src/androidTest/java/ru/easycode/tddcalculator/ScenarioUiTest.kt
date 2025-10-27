@@ -129,4 +129,22 @@ class ScenarioUiTest {
         mainPage.assertInputField(expected = "1+2")
         mainPage.assertResult(expected = "3")
     }
+
+    @Test
+    fun prevent_multiple_plus_operations() {
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField(expected = "2")
+
+        repeat(5) {
+            mainPage.clickOperationPlusButton()
+            mainPage.assertInputField(expected = "2+")
+        }
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField(expected = "2+1")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField(expected = "2+1")
+        mainPage.assertResult(expected = "3")
+    }
 }

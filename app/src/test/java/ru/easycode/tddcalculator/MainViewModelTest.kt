@@ -136,4 +136,22 @@ class MainViewModelTest {
         assertEquals("1+2", inputFlow.value)
         assertEquals("3", resultFlow.value)
     }
+
+    @Test
+    fun prevent_multiple_plus_operations() {
+        viewModel.inputTwo()
+        assertEquals("2", inputFlow.value)
+
+        repeat(5) {
+            viewModel.plus()
+            assertEquals("2+", inputFlow.value)
+        }
+
+        viewModel.inputOne()
+        assertEquals("2+1", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("2+1", inputFlow.value)
+        assertEquals("3", resultFlow.value)
+    }
 }
