@@ -7,5 +7,6 @@ interface MainActions {
     fun inputZero()
 
     fun plus()
+    fun minus()
     fun calculate()
 }

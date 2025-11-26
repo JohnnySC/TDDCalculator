@@ -333,14 +333,24 @@ private class FakeMainRepository(
     private val base: MainRepository = MainRepository.Base()
 ) : MainRepository {
 
-    private var count = 0
+    private var sumCalledCount = 0
+    private var diffCalledCount = 0
 
     override fun sum(left: String, right: String): String {
-        count++
+        sumCalledCount++
         return base.sum(left, right)
     }
 
+    override fun diff(left: String, right: String): String {
+        diffCalledCount++
+        return base.diff(left, right)
+    }
+
     fun assertSumCalled(expectedTimes: Int) {
-        assertEquals(expectedTimes, count)
+        assertEquals(expectedTimes, sumCalledCount)
+    }
+
+    fun assertDiffCalled(expectedTimes: Int) {
+        assertEquals(expectedTimes, diffCalledCount)
     }
 }
