@@ -58,7 +58,7 @@ class MainViewModel(
 
     override fun inputZero() {
         if (addToLeft) {
-            if (left != "0") {
+            if (left != "0" && left != "-") {
                 left += "0"
                 inputMutableFlow.value = left
             }
