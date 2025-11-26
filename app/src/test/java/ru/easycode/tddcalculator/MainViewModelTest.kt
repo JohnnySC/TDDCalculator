@@ -1,5 +1,6 @@
 package ru.easycode.tddcalculator
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.flow.StateFlow
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -326,6 +327,25 @@ class MainViewModelTest {
         viewModel.calculate()
         assertEquals("1-2", inputFlow.value)
         assertEquals("-1", resultFlow.value)
+    }
+
+    @Test
+    fun diff_sign_ahead() {
+        viewModel.minus()
+        assertEquals("-", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("-1", inputFlow.value)
+
+        viewModel.minus()
+        assertEquals("-1-", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("-1-2", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("-1-2", inputFlow.value)
+        assertEquals("-3", resultFlow.value)
     }
 }
 
