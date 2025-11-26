@@ -284,4 +284,20 @@ class ScenarioUiTest {
             mainPage.assertResult("3")
         }
     }
+
+    @Test
+    fun diff_of_two_numbers() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField(expected = "1")
+
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField(expected = "1-")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField(expected = "1-2")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField(expected = "1-2")
+        mainPage.assertResult(expected = "-1")
+    }
 }
