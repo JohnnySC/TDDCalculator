@@ -45,6 +45,13 @@ class MainPage(composeTestRule: ComposeContentTestRule) {
                     hasClickAction()
         )
 
+    private val minusButton =
+        composeTestRule.onNode(
+            hasTestTag("minus button") and
+                    hasText("-") and
+                    hasClickAction()
+        )
+
     private val inputText = composeTestRule.onNode(
         hasTestTag("input text") and
                 hasNoClickAction()
@@ -65,6 +72,10 @@ class MainPage(composeTestRule: ComposeContentTestRule) {
 
     fun clickOperationPlusButton() {
         plusButton.performClick()
+    }
+
+    fun clickOperationMinusButton() {
+        minusButton.performClick()
     }
 
     fun clickNumberTwoButton() {

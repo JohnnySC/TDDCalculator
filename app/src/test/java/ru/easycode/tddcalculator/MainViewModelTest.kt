@@ -118,6 +118,23 @@ class MainViewModelTest {
     }
 
     @Test
+    fun prevent_multiple_zeros_minus() {
+        repeat(10) {
+            viewModel.inputZero()
+            assertEquals("0", inputFlow.value)
+        }
+        viewModel.minus()
+        assertEquals("0-", inputFlow.value)
+        repeat(10) {
+            viewModel.inputZero()
+            assertEquals("0-0", inputFlow.value)
+        }
+        viewModel.calculate()
+        assertEquals("0-0", inputFlow.value)
+        assertEquals("0", resultFlow.value)
+    }
+
+    @Test
     fun prevent_leading_zeros() {
         viewModel.inputZero()
         assertEquals("0", inputFlow.value)
@@ -137,6 +154,31 @@ class MainViewModelTest {
         viewModel.calculate()
         assertEquals("1+2", inputFlow.value)
         assertEquals("3", resultFlow.value)
+    }
+
+    @Test
+    fun prevent_minus_zero() {
+        viewModel.minus()
+        assertEquals("-", inputFlow.value)
+
+        viewModel.inputZero()
+        assertEquals("-", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("-1", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("-1+", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("-1+2", inputFlow.value)
+
+        viewModel.inputZero()
+        assertEquals("-1+20", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("-1+20", inputFlow.value)
+        assertEquals("19", resultFlow.value)
     }
 
     @Test
@@ -311,20 +353,65 @@ class MainViewModelTest {
         }
         repository.assertSumCalled(expectedTimes = 1)
     }
+
+    @Test
+    fun diff_of_two_numbers() {
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+
+        viewModel.minus()
+        assertEquals("1-", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("1-2", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("1-2", inputFlow.value)
+        assertEquals("-1", resultFlow.value)
+    }
+
+    @Test
+    fun diff_sign_ahead() {
+        viewModel.minus()
+        assertEquals("-", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("-1", inputFlow.value)
+
+        viewModel.minus()
+        assertEquals("-1-", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("-1-2", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("-1-2", inputFlow.value)
+        assertEquals("-3", resultFlow.value)
+    }
 }
 
 private class FakeMainRepository(
     private val base: MainRepository = MainRepository.Base()
 ) : MainRepository {
 
-    private var count = 0
+    private var sumCalledCount = 0
+    private var diffCalledCount = 0
 
     override fun sum(left: String, right: String): String {
-        count++
+        sumCalledCount++
         return base.sum(left, right)
     }
 
+    override fun diff(left: String, right: String): String {
+        diffCalledCount++
+        return base.diff(left, right)
+    }
+
     fun assertSumCalled(expectedTimes: Int) {
-        assertEquals(expectedTimes, count)
+        assertEquals(expectedTimes, sumCalledCount)
+    }
+
+    fun assertDiffCalled(expectedTimes: Int) {
+        assertEquals(expectedTimes, diffCalledCount)
     }
 }

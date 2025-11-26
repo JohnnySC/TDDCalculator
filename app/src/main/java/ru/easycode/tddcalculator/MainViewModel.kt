@@ -18,6 +18,7 @@ class MainViewModel(
     private var addToLeft = true
     private var left: String = ""
     private var right: String = ""
+    private var operation: String = ""
 
     override fun inputOne() {
         if (addToLeft) {
@@ -33,7 +34,7 @@ class MainViewModel(
             } else {
                 right += "1"
             }
-            inputMutableFlow.value = "$left+$right"
+            inputMutableFlow.value = "$left$operation$right"
         }
     }
 
@@ -51,25 +52,26 @@ class MainViewModel(
             } else {
                 right += "2"
             }
-            inputMutableFlow.value = "$left+$right"
+            inputMutableFlow.value = "$left$operation$right"
         }
     }
 
     override fun inputZero() {
         if (addToLeft) {
-            if (left != "0") {
+            if (left != "0" && left != "-") {
                 left += "0"
                 inputMutableFlow.value = left
             }
         } else {
             if (right != "0") {
                 right += "0"
-                inputMutableFlow.value = "$left+$right"
+                inputMutableFlow.value = "$left$operation$right"
             }
         }
     }
 
     override fun plus() {
+        operation = "+"
         if (resultFlow.value.isNotEmpty()) {
             left = resultFlow.value
             right = ""
@@ -90,9 +92,39 @@ class MainViewModel(
         }
     }
 
+    override fun minus() {
+        operation = "-"
+        if (resultFlow.value.isNotEmpty()) {
+            left = resultFlow.value
+            right = ""
+            inputMutableFlow.value = "$left-"
+            resultMutableFlow.value = ""
+        } else if (left.isNotEmpty() && right.isNotEmpty()) {
+            val result = repository.diff(left, right)
+            left = result
+            right = ""
+            inputMutableFlow.value = "$left-"
+        } else {
+            val before = inputFlow.value
+            if (before.isEmpty()) {
+                left = "-"
+                inputMutableFlow.value = left
+            } else if (!before.endsWith("-") && left.isNotEmpty()) {
+                addToLeft = false
+                val result = "$before-"
+                inputMutableFlow.value = result
+            }
+        }
+    }
+
     override fun calculate() {
         if (left.isNotEmpty() && right.isNotEmpty() && resultFlow.value.isEmpty()) {
-            val result = repository.sum(left, right)
+            val result = when (operation) {
+                "+" -> repository.sum(left, right)
+                "-" -> repository.diff(left, right)
+                else -> ""
+            }
+            operation = ""
             resultMutableFlow.value = result
         }
     }
