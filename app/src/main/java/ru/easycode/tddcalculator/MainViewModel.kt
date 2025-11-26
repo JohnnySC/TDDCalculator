@@ -65,7 +65,7 @@ class MainViewModel(
         } else {
             if (right != "0") {
                 right += "0"
-                inputMutableFlow.value = "$left+$right"
+                inputMutableFlow.value = "$left$operation$right"
             }
         }
     }
