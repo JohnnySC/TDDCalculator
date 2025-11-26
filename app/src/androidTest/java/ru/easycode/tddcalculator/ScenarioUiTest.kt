@@ -300,4 +300,23 @@ class ScenarioUiTest {
         mainPage.assertInputField(expected = "1-2")
         mainPage.assertResult(expected = "-1")
     }
+
+    @Test
+    fun diff_sign_ahead() {
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField("-")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("-1")
+
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField("-1-")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("-1-2")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("-1-2")
+        mainPage.assertResult("-3")
+    }
 }
