@@ -178,7 +178,7 @@ class MainViewModelTest {
 
         viewModel.calculate()
         assertEquals("-1+20", inputFlow.value)
-        assertEquals("-19", resultFlow.value)
+        assertEquals("19", resultFlow.value)
     }
 
     @Test

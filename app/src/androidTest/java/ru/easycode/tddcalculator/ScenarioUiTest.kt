@@ -169,7 +169,7 @@ class ScenarioUiTest {
 
         mainPage.clickEqualsButton()
         mainPage.assertInputField(expected = "-1+20")
-        mainPage.assertResult("-19")
+        mainPage.assertResult("19")
     }
 
     @Test
