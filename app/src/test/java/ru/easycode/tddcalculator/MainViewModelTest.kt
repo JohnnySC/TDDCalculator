@@ -311,6 +311,22 @@ class MainViewModelTest {
         }
         repository.assertSumCalled(expectedTimes = 1)
     }
+
+    @Test
+    fun diff_of_two_numbers() {
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+
+        viewModel.minus()
+        assertEquals("1-", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("1-2", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("1-2", inputFlow.value)
+        assertEquals("-1", resultFlow.value)
+    }
 }
 
 private class FakeMainRepository(
