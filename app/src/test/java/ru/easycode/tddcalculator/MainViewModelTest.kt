@@ -157,6 +157,31 @@ class MainViewModelTest {
     }
 
     @Test
+    fun prevent_minus_zero() {
+        viewModel.minus()
+        assertEquals("-", inputFlow.value)
+
+        viewModel.inputZero()
+        assertEquals("-", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("-1", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("-1+", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("-1+2", inputFlow.value)
+
+        viewModel.inputZero()
+        assertEquals("-1+20", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("-1+20", inputFlow.value)
+        assertEquals("-19", resultFlow.value)
+    }
+
+    @Test
     fun prevent_multiple_plus_operations() {
         viewModel.inputTwo()
         assertEquals("2", inputFlow.value)
