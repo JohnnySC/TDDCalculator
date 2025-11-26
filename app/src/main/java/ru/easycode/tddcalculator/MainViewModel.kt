@@ -106,7 +106,10 @@ class MainViewModel(
             inputMutableFlow.value = "$left-"
         } else {
             val before = inputFlow.value
-            if (!before.endsWith("-") && left.isNotEmpty()) {
+            if (before.isEmpty()) {
+                left = "-"
+                inputMutableFlow.value = left
+            } else if (!before.endsWith("-") && left.isNotEmpty()) {
                 addToLeft = false
                 val result = "$before-"
                 inputMutableFlow.value = result

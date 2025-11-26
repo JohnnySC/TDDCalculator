@@ -1,6 +1,5 @@
 package ru.easycode.tddcalculator
 
-import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.flow.StateFlow
 import org.junit.Assert.assertEquals
 import org.junit.Before
