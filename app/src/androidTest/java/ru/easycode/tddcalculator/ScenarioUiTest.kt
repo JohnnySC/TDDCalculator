@@ -148,6 +148,31 @@ class ScenarioUiTest {
     }
 
     @Test
+    fun prevent_minus_zero() {
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField(expected = "-")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField(expected = "-")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField(expected = "-1")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField(expected = "-1+")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField(expected = "-1+2")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField(expected = "-1+20")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField(expected = "-1+20")
+        mainPage.assertResult("-19")
+    }
+
+    @Test
     fun prevent_multiple_plus_operations() {
         mainPage.clickNumberTwoButton()
         mainPage.assertInputField(expected = "2")
