@@ -109,6 +109,23 @@ class ScenarioUiTest {
     }
 
     @Test
+    fun prevent_multiple_zeros_minus_operation() {
+        repeat(10) {
+            mainPage.clickNumberZero()
+            mainPage.assertInputField(expected = "0")
+        }
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField(expected = "0-")
+        repeat(10) {
+            mainPage.clickNumberZero()
+            mainPage.assertInputField(expected = "0-0")
+        }
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField(expected = "0-0")
+        mainPage.assertResult(expected = "0")
+    }
+
+    @Test
     fun prevent_leading_zeros() {
         mainPage.clickNumberZero()
         mainPage.assertInputField(expected = "0")
