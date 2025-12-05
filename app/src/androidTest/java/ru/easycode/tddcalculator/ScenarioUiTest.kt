@@ -502,11 +502,13 @@ class ScenarioUiTest {
         mainPage.assertResult(expected = "-1")
     }
 
-    //18. - N - N = result
+    //18. -M N - N = result
     @Test
     fun diff_sign_ahead() {
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField("-")
+        repeat(3) {
+            mainPage.clickOperationMinusButton()
+            mainPage.assertInputField("-")
+        }
 
         mainPage.clickNumberOneButton()
         mainPage.assertInputField("-1")
@@ -520,5 +522,43 @@ class ScenarioUiTest {
         mainPage.clickEqualsButton()
         mainPage.assertInputField("-1-2")
         mainPage.assertResult("-3")
+    }
+
+    //19. -+ N -+ N -+ N = result
+    @Test
+    fun change_minus_to_plus() {
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField("-")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("2")
+
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField("2-")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("2+")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("2+1")
+
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField("3-")
+        mainPage.assertResult("")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("3+")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("3+0")
+        mainPage.assertResult("")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("3+0")
+        mainPage.assertResult("3")
     }
 }
