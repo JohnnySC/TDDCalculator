@@ -69,7 +69,6 @@ class MainViewModelTest {
         assertEquals("2202", resultFlow.value)
     }
 
-
     @Test
     fun sum_of_two_numbers_corner_case() {
         viewModel.inputOne()
@@ -200,6 +199,24 @@ class MainViewModelTest {
     }
 
     @Test
+    fun prevent_multiple_minus_operations() {
+        viewModel.inputTwo()
+        assertEquals("2", inputFlow.value)
+
+        repeat(5) {
+            viewModel.minus()
+            assertEquals("2-", inputFlow.value)
+        }
+
+        viewModel.inputOne()
+        assertEquals("2-1", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("2-1", inputFlow.value)
+        assertEquals("1", resultFlow.value)
+    }
+
+    @Test
     fun prevent_leading_pluses() {
         viewModel.plus()
         assertEquals("", inputFlow.value)
@@ -267,6 +284,54 @@ class MainViewModelTest {
     }
 
     @Test
+    fun diff_of_more_than_two_numbers() {
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.minus()
+        assertEquals("1-", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("1-2", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        repeat(3) {
+            viewModel.minus()
+            repository.assertDiffCalled(expectedTimes = 1)
+            assertEquals("-1-", inputFlow.value)
+            assertEquals("", resultFlow.value)
+        }
+
+        viewModel.inputTwo()
+        assertEquals("-1-2", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.inputZero()
+        assertEquals("-1-20", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        repeat(3) {
+            viewModel.minus()
+            repository.assertDiffCalled(expectedTimes = 2)
+            assertEquals("-21-", inputFlow.value)
+            assertEquals("", resultFlow.value)
+        }
+
+        viewModel.inputTwo()
+        assertEquals("-21-2", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        repeat(3) {
+            viewModel.calculate()
+            repository.assertDiffCalled(expectedTimes = 3)
+            assertEquals("-21-2", inputFlow.value)
+            assertEquals("-23", resultFlow.value)
+        }
+    }
+
+    @Test
     fun sum_after_equals() {
         viewModel.inputOne()
         assertEquals("1", inputFlow.value)
@@ -315,6 +380,54 @@ class MainViewModelTest {
     }
 
     @Test
+    fun diff_after_equals() {
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+
+        viewModel.minus()
+        assertEquals("1-", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("1-2", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("1-2", inputFlow.value)
+        assertEquals("-1", resultFlow.value)
+
+        viewModel.minus()
+        assertEquals("-1-", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("-1-1", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.calculate()
+        assertEquals("-1-1", inputFlow.value)
+        assertEquals("-2", resultFlow.value)
+
+        viewModel.minus()
+        assertEquals("-2-", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("-2-2", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.minus()
+        assertEquals("-4-", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("-4-1", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.calculate()
+        assertEquals("-4-1", inputFlow.value)
+        assertEquals("-5", resultFlow.value)
+    }
+
+    @Test
     fun prevent_equals_not_at_the_end() {
         repeat(3) {
             viewModel.calculate()
@@ -355,6 +468,46 @@ class MainViewModelTest {
     }
 
     @Test
+    fun prevent_equals_after_minus() {
+        repeat(3) {
+            viewModel.calculate()
+            assertEquals("", inputFlow.value)
+            assertEquals("", resultFlow.value)
+        }
+
+        viewModel.inputTwo()
+        assertEquals("2", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        repeat(3) {
+            viewModel.calculate()
+            assertEquals("2", inputFlow.value)
+            assertEquals("", resultFlow.value)
+        }
+
+        viewModel.minus()
+        assertEquals("2-", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        repeat(3) {
+            viewModel.calculate()
+            assertEquals("2-", inputFlow.value)
+            assertEquals("", resultFlow.value)
+        }
+
+        viewModel.inputOne()
+        assertEquals("2-1", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        repeat(3) {
+            viewModel.calculate()
+            assertEquals("2-1", inputFlow.value)
+            assertEquals("1", resultFlow.value)
+        }
+        repository.assertDiffCalled(expectedTimes = 1)
+    }
+
+    @Test
     fun diff_of_two_numbers() {
         viewModel.inputOne()
         assertEquals("1", inputFlow.value)
@@ -388,6 +541,41 @@ class MainViewModelTest {
         assertEquals("-1-2", inputFlow.value)
         assertEquals("-3", resultFlow.value)
     }
+
+    @Test
+    fun change_minus_to_plus() {
+        viewModel.minus()
+        assertEquals("-", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("2", inputFlow.value)
+
+        viewModel.minus()
+        assertEquals("2-", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("2+", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("2+1", inputFlow.value)
+
+        viewModel.minus()
+        assertEquals("3-", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("3+", inputFlow.value)
+
+        viewModel.inputZero()
+        assertEquals("3+0", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("3+0", inputFlow.value)
+        assertEquals("3", resultFlow.value)
+    }
+
 }
 
 private class FakeMainRepository(
