@@ -541,6 +541,41 @@ class MainViewModelTest {
         assertEquals("-1-2", inputFlow.value)
         assertEquals("-3", resultFlow.value)
     }
+
+    @Test
+    fun change_minus_to_plus() {
+        viewModel.minus()
+        assertEquals("-", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("2", inputFlow.value)
+
+        viewModel.minus()
+        assertEquals("2-", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("2+", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("2+1", inputFlow.value)
+
+        viewModel.minus()
+        assertEquals("3-", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("3+", inputFlow.value)
+
+        viewModel.inputZero()
+        assertEquals("3+0", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("3+0", inputFlow.value)
+        assertEquals("3", resultFlow.value)
+    }
+
 }
 
 private class FakeMainRepository(
