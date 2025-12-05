@@ -6,6 +6,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/**
+ * N: number (1 - 9)
+ * 0: zero
+ * M: Multiple repetitions
+ * MAX: max value
+ */
 @RunWith(AndroidJUnit4::class)
 class ScenarioUiTest {
 
@@ -14,6 +20,7 @@ class ScenarioUiTest {
 
     private val mainPage = MainPage(composeTestRule)
 
+    //1. N + N = result
     @Test
     fun sum_of_two_numbers() {
         mainPage.clickNumberTwoButton()
@@ -30,6 +37,7 @@ class ScenarioUiTest {
         mainPage.assertResult(expected = "3")
     }
 
+    //2. NM + NM = result
     @Test
     fun sum_of_two_numbers_more_complex() {
         mainPage.clickNumberTwoButton()
@@ -61,6 +69,7 @@ class ScenarioUiTest {
         mainPage.assertResult(expected = "2202")
     }
 
+    //3. N_MAX + N_MAX = result
     @Test
     fun sum_of_two_numbers_corner_case() {
         mainPage.clickNumberOneButton()
@@ -91,6 +100,7 @@ class ScenarioUiTest {
         mainPage.assertResult(expected = "3000000000")
     }
 
+    //4. 0M + 0M = 0
     @Test
     fun prevent_multiple_zeros() {
         repeat(10) {
@@ -108,6 +118,7 @@ class ScenarioUiTest {
         mainPage.assertResult(expected = "0")
     }
 
+    //5. 0M - 0M = 0
     @Test
     fun prevent_multiple_zeros_minus_operation() {
         repeat(10) {
@@ -125,6 +136,7 @@ class ScenarioUiTest {
         mainPage.assertResult(expected = "0")
     }
 
+    //6. 0 N + 0 N = result
     @Test
     fun prevent_leading_zeros() {
         mainPage.clickNumberZero()
@@ -147,6 +159,7 @@ class ScenarioUiTest {
         mainPage.assertResult(expected = "3")
     }
 
+    //7. - 0 N + N 0 = result
     @Test
     fun prevent_minus_zero() {
         mainPage.clickOperationMinusButton()
@@ -172,6 +185,7 @@ class ScenarioUiTest {
         mainPage.assertResult("19")
     }
 
+    //8. N +M N = result
     @Test
     fun prevent_multiple_plus_operations() {
         mainPage.clickNumberTwoButton()
@@ -190,6 +204,26 @@ class ScenarioUiTest {
         mainPage.assertResult(expected = "3")
     }
 
+    //9. N -M N = result
+    @Test
+    fun prevent_multiple_minus_operations() {
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField(expected = "2")
+
+        repeat(5) {
+            mainPage.clickOperationMinusButton()
+            mainPage.assertInputField(expected = "2-")
+        }
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField(expected = "2-1")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField(expected = "2-1")
+        mainPage.assertResult(expected = "1")
+    }
+
+    //10. + N + N = result
     @Test
     fun prevent_leading_pluses() {
         mainPage.clickOperationPlusButton()
@@ -209,6 +243,7 @@ class ScenarioUiTest {
         mainPage.assertResult(expected = "3")
     }
 
+    //11. N + N + NM + N = result
     @Test
     fun sum_of_more_than_two_numbers() {
         mainPage.clickNumberOneButton()
@@ -240,6 +275,39 @@ class ScenarioUiTest {
         mainPage.assertResult("15")
     }
 
+    //12. N - N - NM - N = result
+    @Test
+    fun diff_of_more_than_two_numbers() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField("1-")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("1-2")
+
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField("-1-")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("-1-2")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("-1-20")
+
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField("-21-")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("-21-2")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("-21-2")
+        mainPage.assertResult("-23")
+    }
+
+    //13. N + N = result + N = result + N + N = result
     @Test
     fun sum_after_equals() {
         mainPage.clickNumberOneButton()
@@ -288,6 +356,56 @@ class ScenarioUiTest {
         mainPage.assertResult("7")
     }
 
+    //14. N - N = result - N = result - N - N = result
+    @Test
+    fun diff_after_equals() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField("1-")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("1-2")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("1-2")
+        mainPage.assertResult("-1")
+
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField("-1-")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("-1-1")
+        mainPage.assertResult("")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("-1-1")
+        mainPage.assertResult("-2")
+
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField("-2-")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("-2-2")
+        mainPage.assertResult("")
+
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField("-4-")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("-4-1")
+        mainPage.assertResult("")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("-4-1")
+        mainPage.assertResult("-5")
+    }
+
+    //15. =M N =M + =M N =M result
     @Test
     fun prevent_equals_not_at_the_end() {
         repeat(3) {
@@ -327,6 +445,47 @@ class ScenarioUiTest {
         }
     }
 
+    //16. =M N =M - =M N =M result
+    @Test
+    fun prevent_equals_after_minus() {
+        repeat(3) {
+            mainPage.clickEqualsButton()
+            mainPage.assertInputField(expected = "")
+            mainPage.assertResult("")
+        }
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField(expected = "2")
+        mainPage.assertResult("")
+
+        repeat(3) {
+            mainPage.clickEqualsButton()
+            mainPage.assertInputField(expected = "2")
+            mainPage.assertResult("")
+        }
+
+        mainPage.clickOperationMinusButton()
+        mainPage.assertInputField(expected = "2-")
+        mainPage.assertResult("")
+
+        repeat(3) {
+            mainPage.clickEqualsButton()
+            mainPage.assertInputField(expected = "2-")
+            mainPage.assertResult("")
+        }
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField(expected = "2-1")
+        mainPage.assertResult("")
+
+        repeat(3) {
+            mainPage.clickEqualsButton()
+            mainPage.assertInputField(expected = "2-1")
+            mainPage.assertResult("1")
+        }
+    }
+
+    //17. N - N = result
     @Test
     fun diff_of_two_numbers() {
         mainPage.clickNumberOneButton()
@@ -343,6 +502,7 @@ class ScenarioUiTest {
         mainPage.assertResult(expected = "-1")
     }
 
+    //18. - N - N = result
     @Test
     fun diff_sign_ahead() {
         mainPage.clickOperationMinusButton()
