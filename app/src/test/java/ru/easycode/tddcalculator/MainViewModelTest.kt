@@ -200,20 +200,24 @@ class MainViewModelTest {
 
     @Test
     fun prevent_multiple_minus_operations() {
+        repeat(5) {
+            viewModel.minus()
+            assertEquals("-", inputFlow.value)
+        }
         viewModel.inputTwo()
-        assertEquals("2", inputFlow.value)
+        assertEquals("-2", inputFlow.value)
 
         repeat(5) {
             viewModel.minus()
-            assertEquals("2-", inputFlow.value)
+            assertEquals("-2-", inputFlow.value)
         }
 
         viewModel.inputOne()
-        assertEquals("2-1", inputFlow.value)
+        assertEquals("-2-1", inputFlow.value)
 
         viewModel.calculate()
-        assertEquals("2-1", inputFlow.value)
-        assertEquals("1", resultFlow.value)
+        assertEquals("-2-1", inputFlow.value)
+        assertEquals("-3", resultFlow.value)
     }
 
     @Test
@@ -574,6 +578,25 @@ class MainViewModelTest {
         viewModel.calculate()
         assertEquals("3+0", inputFlow.value)
         assertEquals("3", resultFlow.value)
+    }
+
+    @Test
+    fun switch_operation() {
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+
+        viewModel.plus()
+        assertEquals("1+", inputFlow.value)
+
+        viewModel.minus()
+        assertEquals("1-", inputFlow.value)
+
+        viewModel.inputTwo()
+        assertEquals("1-2", inputFlow.value)
+
+        viewModel.calculate()
+        assertEquals("1-2", inputFlow.value)
+        assertEquals("-1", resultFlow.value)
     }
 
 }
