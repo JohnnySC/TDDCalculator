@@ -6,7 +6,10 @@ import kotlinx.coroutines.flow.StateFlow
 
 class MainViewModel(
     private val repository: MainRepository = MainRepository.Base()
-) : ViewModel(), MainActions {
+) : ViewModel(), MainActions, UpdateCallback {
+
+    private var state: CalculationState = CalculationState.DefiningLeft()
+    private var calculationParts = CalculationParts("", "", "")
 
     private val inputMutableFlow: MutableStateFlow<String> = MutableStateFlow("")
     private val resultMutableFlow: MutableStateFlow<String> = MutableStateFlow("")
@@ -15,117 +18,54 @@ class MainViewModel(
     val resultFlow: StateFlow<String>
         get() = resultMutableFlow
 
-    private var addToLeft = true
-    private var left: String = ""
-    private var right: String = ""
-    private var operation: String = ""
+    override fun updateCalculationParts(calculationParts: CalculationParts) {
+        this.calculationParts = calculationParts
+    }
+
+    override fun updateState(state: CalculationState) {
+        this.state = state
+    }
+
+    override fun updateInput() {
+        inputMutableFlow.value = calculationParts.toString()
+    }
+
+    override fun updateResult(result: String) {
+        resultMutableFlow.value = result
+    }
 
     override fun inputOne() {
-        if (addToLeft) {
-            if (left == "0") {
-                left = "1"
-            } else {
-                left += "1"
-            }
-            inputMutableFlow.value = left
-        } else {
-            if (right == "0") {
-                right = "1"
-            } else {
-                right += "1"
-            }
-            inputMutableFlow.value = "$left$operation$right"
-        }
+        state.inputNumber("1", calculationParts, this)
     }
 
     override fun inputTwo() {
-        if (addToLeft) {
-            if (left == "0") {
-                left = "2"
-            } else {
-                left += "2"
-            }
-            inputMutableFlow.value = left
-        } else {
-            if (right == "0") {
-                right = "2"
-            } else {
-                right += "2"
-            }
-            inputMutableFlow.value = "$left$operation$right"
-        }
+        state.inputNumber("2", calculationParts, this)
     }
 
     override fun inputZero() {
-        if (addToLeft) {
-            if (left != "0" && left != "-") {
-                left += "0"
-                inputMutableFlow.value = left
-            }
-        } else {
-            if (right != "0") {
-                right += "0"
-                inputMutableFlow.value = "$left$operation$right"
-            }
-        }
+        state.inputZero(calculationParts, this)
     }
 
     override fun plus() {
-        operation = "+"
-        if (resultFlow.value.isNotEmpty()) {
-            left = resultFlow.value
-            right = ""
-            inputMutableFlow.value = "$left+"
-            resultMutableFlow.value = ""
-        } else if (left.isNotEmpty() && right.isNotEmpty()) {
-            val result = repository.sum(left, right)
-            left = result
-            right = ""
-            inputMutableFlow.value = "$left+"
-        } else {
-            val before = inputFlow.value
-            if (!before.endsWith("+") && left.isNotEmpty()) {
-                addToLeft = false
-                val result = "$before+"
-                inputMutableFlow.value = result
-            }
-        }
+        state.plus(repository, calculationParts, this)
     }
 
     override fun minus() {
-        operation = "-"
-        if (resultFlow.value.isNotEmpty()) {
-            left = resultFlow.value
-            right = ""
-            inputMutableFlow.value = "$left-"
-            resultMutableFlow.value = ""
-        } else if (left.isNotEmpty() && right.isNotEmpty()) {
-            val result = repository.diff(left, right)
-            left = result
-            right = ""
-            inputMutableFlow.value = "$left-"
-        } else {
-            val before = inputFlow.value
-            if (before.isEmpty()) {
-                left = "-"
-                inputMutableFlow.value = left
-            } else if (!before.endsWith("-") && left.isNotEmpty()) {
-                addToLeft = false
-                val result = "$before-"
-                inputMutableFlow.value = result
-            }
-        }
+        state.minus(repository, calculationParts, this)
     }
 
     override fun calculate() {
-        if (left.isNotEmpty() && right.isNotEmpty() && resultFlow.value.isEmpty()) {
-            val result = when (operation) {
-                "+" -> repository.sum(left, right)
-                "-" -> repository.diff(left, right)
-                else -> ""
-            }
-            operation = ""
-            resultMutableFlow.value = result
-        }
+        state.calculate(repository, calculationParts, this)
     }
+}
+
+interface UpdateCallback {
+
+    fun updateCalculationParts(calculationParts: CalculationParts)
+
+    fun updateState(state: CalculationState)
+
+    fun updateInput()
+
+    fun updateResult(result: String)
 }
