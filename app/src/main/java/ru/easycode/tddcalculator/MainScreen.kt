@@ -50,6 +50,7 @@ fun MainScreen(input: String, result: String, actions: MainActions) {
         Row {
             CalculatorButton("plus button", "+", actions::plus)
             CalculatorButton("minus button", "-", actions::minus)
+            CalculatorButton("multiply button", "*", actions::multiply)
             CalculatorButton("equals button", "=", actions::calculate)
         }
     }
