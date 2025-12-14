@@ -59,6 +59,13 @@ class MainPage(composeTestRule: ComposeContentTestRule) {
                     hasClickAction()
         )
 
+    private val divideButton =
+        composeTestRule.onNode(
+            hasTestTag("divide button") and
+                    hasText("/") and
+                    hasClickAction()
+        )
+
     private val inputText = composeTestRule.onNode(
         hasTestTag("input text") and
                 hasNoClickAction()
@@ -87,6 +94,10 @@ class MainPage(composeTestRule: ComposeContentTestRule) {
 
     fun clickOperationMultiplyButton() {
         multiplyButton.performClick()
+    }
+
+    fun clickOperationDivideButton() {
+        divideButton.performClick()
     }
 
     fun clickNumberTwoButton() {
