@@ -8,6 +8,8 @@ interface MainRepository {
 
     fun diff(left: String, right: String): String
 
+    fun multiply(left: String, right: String): String
+
     class Base : MainRepository {
 
         override fun sum(left: String, right: String): String {
@@ -16,6 +18,10 @@ interface MainRepository {
 
         override fun diff(left: String, right: String): String {
             return BigInteger(left).minus(BigInteger(right)).toString()
+        }
+
+        override fun multiply(left: String, right: String): String {
+            return BigInteger(left).multiply(BigInteger(right)).toString()
         }
     }
 }

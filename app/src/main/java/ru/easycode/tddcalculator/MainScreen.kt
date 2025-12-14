@@ -64,6 +64,7 @@ fun PreviewMainScreen() {
         override fun inputTwo() = Unit
         override fun plus() = Unit
         override fun minus() = Unit
+        override fun multiply() = Unit
         override fun calculate() = Unit
         override fun inputZero() = Unit
     })
