@@ -741,4 +741,42 @@ class ScenarioUiTest {
         mainPage.assertInputField("8.5+1")
         mainPage.assertResult("9.5")
     }
+
+    @Test
+    fun uncertainty() {
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("0")
+
+        mainPage.clickOperationDivideButton()
+        mainPage.assertInputField("0/")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("0/0")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("0/0")
+        mainPage.assertResult("uncertainty")
+    }
+
+    @Test
+    fun uncertainty_and_then_operation() {
+        uncertainty()
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.assertResult("")
+    }
+
+    @Test
+    fun uncertainty_and_then_number() {
+        uncertainty()
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.assertResult("")
+    }
 }
