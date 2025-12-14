@@ -607,6 +607,7 @@ private class FakeMainRepository(
 
     private var sumCalledCount = 0
     private var diffCalledCount = 0
+    private var multiplyCalledCount = 0
 
     override fun sum(left: String, right: String): String {
         sumCalledCount++
@@ -618,11 +619,20 @@ private class FakeMainRepository(
         return base.diff(left, right)
     }
 
+    override fun multiply(left: String, right: String): String {
+        multiplyCalledCount++
+        return base.multiply(left, right)
+    }
+
     fun assertSumCalled(expectedTimes: Int) {
         assertEquals(expectedTimes, sumCalledCount)
     }
 
     fun assertDiffCalled(expectedTimes: Int) {
         assertEquals(expectedTimes, diffCalledCount)
+    }
+
+    fun assertMultiplyCalled(expectedTimes: Int) {
+        assertEquals(expectedTimes, multiplyCalledCount)
     }
 }

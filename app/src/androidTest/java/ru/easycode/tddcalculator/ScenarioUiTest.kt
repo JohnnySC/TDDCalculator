@@ -562,6 +562,7 @@ class ScenarioUiTest {
         mainPage.assertResult("3")
     }
 
+    //20. *M 0M *M 0M =M result
     @Test
     fun multiply_zeros() {
         repeat(3) {
@@ -587,6 +588,7 @@ class ScenarioUiTest {
         }
     }
 
+    //21. NM * N = * NM =
     @Test
     fun multiply_several_times() {
         mainPage.clickNumberOneButton()
@@ -604,6 +606,40 @@ class ScenarioUiTest {
         mainPage.clickEqualsButton()
         mainPage.assertInputField("11*2")
         mainPage.assertResult("22")
+
+        mainPage.clickOperationMultiplyButton()
+        mainPage.assertInputField("22*")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("22*1")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("22*10")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("22*10")
+        mainPage.assertResult("220")
+    }
+
+    //22. NM * N += NM =
+    @Test
+    fun multiply_several_times_changed_operation() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("11")
+
+        mainPage.clickOperationMultiplyButton()
+        mainPage.assertInputField("11*")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("11*2")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("22+")
+        mainPage.assertResult("")
 
         mainPage.clickOperationMultiplyButton()
         mainPage.assertInputField("22*")
