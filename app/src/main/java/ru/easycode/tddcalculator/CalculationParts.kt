@@ -8,4 +8,14 @@ data class CalculationParts(
     override fun toString(): String {
         return "$left$operation$right"
     }
+
+    fun calculate(repository: MainRepository): String {
+        return when (operation) {
+            "+" -> repository.sum(left, right)
+            "-" -> repository.diff(left, right)
+            "*" -> repository.multiply(left, right)
+            "/" -> repository.divide(left, right)
+            else -> throw IllegalStateException("unknown operation $operation")
+        }
+    }
 }

@@ -561,4 +561,222 @@ class ScenarioUiTest {
         mainPage.assertInputField("3+0")
         mainPage.assertResult("3")
     }
+
+    //20. *M 0M *M 0M =M result
+    @Test
+    fun multiply_zeros() {
+        repeat(3) {
+            mainPage.clickOperationMultiplyButton()
+            mainPage.assertInputField("")
+        }
+        repeat(3) {
+            mainPage.clickNumberZero()
+            mainPage.assertInputField("0")
+        }
+        repeat(3) {
+            mainPage.clickOperationMultiplyButton()
+            mainPage.assertInputField("0*")
+        }
+        repeat(3) {
+            mainPage.clickNumberZero()
+            mainPage.assertInputField("0*0")
+        }
+        repeat(3) {
+            mainPage.clickEqualsButton()
+            mainPage.assertInputField("0*0")
+            mainPage.assertResult("0")
+        }
+    }
+
+    //21. NM * N = * NM =
+    @Test
+    fun multiply_several_times() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("11")
+
+        mainPage.clickOperationMultiplyButton()
+        mainPage.assertInputField("11*")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("11*2")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("11*2")
+        mainPage.assertResult("22")
+
+        mainPage.clickOperationMultiplyButton()
+        mainPage.assertInputField("22*")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("22*1")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("22*10")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("22*10")
+        mainPage.assertResult("220")
+    }
+
+    //22. NM * N += NM =
+    @Test
+    fun multiply_several_times_changed_operation() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("11")
+
+        mainPage.clickOperationMultiplyButton()
+        mainPage.assertInputField("11*")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("11*2")
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("22+")
+        mainPage.assertResult("")
+
+        mainPage.clickOperationMultiplyButton()
+        mainPage.assertInputField("22*")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("22*1")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("22*10")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("22*10")
+        mainPage.assertResult("220")
+    }
+
+    //23. divide a number by zero
+    @Test
+    fun divide_number_by_zero() {
+        repeat(3) {
+            mainPage.clickOperationDivideButton()
+            mainPage.assertInputField("")
+        }
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        repeat(3) {
+            mainPage.clickOperationDivideButton()
+            mainPage.assertInputField("1/")
+        }
+
+        repeat(3) {
+            mainPage.clickNumberZero()
+            mainPage.assertInputField("1/0")
+        }
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("1/0")
+        mainPage.assertResult("infinity")
+    }
+
+    @Test
+    fun divide_by_zero_and_then_operation() {
+        divide_number_by_zero()
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.assertResult("")
+    }
+
+    @Test
+    fun divide_by_zero_and_then_number() {
+        divide_number_by_zero()
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.assertResult("")
+    }
+
+    //102/12 = 8.5
+    @Test
+    fun divide_decimal() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("10")
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("102")
+
+        mainPage.clickOperationDivideButton()
+        mainPage.assertInputField("102/")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("102/1")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("102/12")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("102/12")
+        mainPage.assertResult("8.5")
+    }
+
+    @Test
+    fun sum_of_decimals() {
+        divide_decimal()
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("8.5+")
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("8.5+1")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("8.5+1")
+        mainPage.assertResult("9.5")
+    }
+
+    @Test
+    fun uncertainty() {
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("0")
+
+        mainPage.clickOperationDivideButton()
+        mainPage.assertInputField("0/")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("0/0")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("0/0")
+        mainPage.assertResult("uncertainty")
+    }
+
+    @Test
+    fun uncertainty_and_then_operation() {
+        uncertainty()
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.assertResult("")
+    }
+
+    @Test
+    fun uncertainty_and_then_number() {
+        uncertainty()
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.assertResult("")
+    }
 }

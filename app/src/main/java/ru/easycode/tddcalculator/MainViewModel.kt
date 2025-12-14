@@ -54,6 +54,14 @@ class MainViewModel(
         state.minus(repository, calculationParts, this)
     }
 
+    override fun multiply() {
+        state.multiply(repository, calculationParts, this)
+    }
+
+    override fun divide() {
+        state.divide(repository, calculationParts, this)
+    }
+
     override fun calculate() {
         state.calculate(repository, calculationParts, this)
     }
