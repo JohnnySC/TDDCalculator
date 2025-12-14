@@ -280,7 +280,7 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
-            if (calculationParts.right == "0") {
+            if (calculationParts.right == "0" && calculationParts.operation == "/") {
                 updateCallback.updateResult("infinity")
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateState(DefiningLeft())
