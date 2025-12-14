@@ -561,4 +561,62 @@ class ScenarioUiTest {
         mainPage.assertInputField("3+0")
         mainPage.assertResult("3")
     }
+
+    @Test
+    fun multiply_zeros() {
+        repeat(3) {
+            mainPage.clickOperationMultiplyButton()
+            mainPage.assertInputField("")
+        }
+        repeat(3) {
+            mainPage.clickNumberZero()
+            mainPage.assertInputField("0")
+        }
+        repeat(3) {
+            mainPage.clickOperationMultiplyButton()
+            mainPage.assertInputField("0*")
+        }
+        repeat(3) {
+            mainPage.clickNumberZero()
+            mainPage.assertInputField("0*0")
+        }
+        repeat(3) {
+            mainPage.clickEqualsButton()
+            mainPage.assertInputField("0*0")
+            mainPage.assertResult("0")
+        }
+    }
+
+    @Test
+    fun multiply_several_times() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("11")
+
+        mainPage.clickOperationMultiplyButton()
+        mainPage.assertInputField("11*")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("11*2")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("11*2")
+        mainPage.assertResult("22")
+
+        mainPage.clickOperationMultiplyButton()
+        mainPage.assertInputField("22*")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("22*1")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("22*10")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("22*10")
+        mainPage.assertResult("220")
+    }
 }
