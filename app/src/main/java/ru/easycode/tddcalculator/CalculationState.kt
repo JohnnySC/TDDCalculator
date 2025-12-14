@@ -34,6 +34,12 @@ interface CalculationState {
         updateCallback: UpdateCallback
     )
 
+     fun divide(
+        repository: MainRepository,
+        calculationParts: CalculationParts,
+        updateCallback: UpdateCallback
+    )
+
     class DefiningLeft : CalculationState {
 
         override fun inputNumber(
@@ -65,7 +71,12 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
-            if (calculationParts.left.isEmpty()) return
+            if (calculationParts.left.isEmpty()) {
+                updateCallback.updateCalculationParts(CalculationParts())
+                updateCallback.updateInput()
+                updateCallback.updateResult("")
+                return
+            }
             if (calculationParts.left == "-") {
                 updateCallback.updateCalculationParts(CalculationParts())
             } else {
@@ -105,10 +116,36 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
-            if (calculationParts.left.isEmpty()) return
+            if (calculationParts.left.isEmpty()) {
+                updateCallback.updateCalculationParts(CalculationParts())
+                updateCallback.updateInput()
+                updateCallback.updateResult("")
+                return
+            }
             updateCallback.updateCalculationParts(
                 CalculationParts(
                     left = calculationParts.left, operation = "*"
+                )
+            )
+            updateCallback.updateState(DefineOperation())
+            updateCallback.updateInput()
+            updateCallback.updateResult("")
+        }
+
+        override fun divide(
+            repository: MainRepository,
+            calculationParts: CalculationParts,
+            updateCallback: UpdateCallback
+        ) {
+            if (calculationParts.left.isEmpty()) {
+                updateCallback.updateCalculationParts(CalculationParts())
+                updateCallback.updateInput()
+                updateCallback.updateResult("")
+                return
+            }
+            updateCallback.updateCalculationParts(
+                CalculationParts(
+                    left = calculationParts.left, operation = "/"
                 )
             )
             updateCallback.updateState(DefineOperation())
@@ -182,6 +219,21 @@ interface CalculationState {
             updateCallback.updateInput()
             updateCallback.updateResult("")
         }
+
+        override fun divide(
+            repository: MainRepository,
+            calculationParts: CalculationParts,
+            updateCallback: UpdateCallback
+        ) {
+            if (calculationParts.operation == "/") return
+            updateCallback.updateCalculationParts(
+                CalculationParts(
+                    left = calculationParts.left, operation = "/"
+                )
+            )
+            updateCallback.updateInput()
+            updateCallback.updateResult("")
+        }
     }
 
     class DefiningRight : CalculationState {
@@ -228,10 +280,16 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
-            val result = calculationParts.calculate(repository)
-            updateCallback.updateResult(result)
-            updateCallback.updateState(DefiningLeft())
-            updateCallback.updateCalculationParts(CalculationParts(left = result))
+            if (calculationParts.right == "0") {
+                updateCallback.updateResult("infinity")
+                updateCallback.updateCalculationParts(CalculationParts())
+                updateCallback.updateState(DefiningLeft())
+            } else {
+                val result = calculationParts.calculate(repository)
+                updateCallback.updateResult(result)
+                updateCallback.updateState(DefiningLeft())
+                updateCallback.updateCalculationParts(CalculationParts(left = result))
+            }
         }
 
         override fun plus(
@@ -280,6 +338,28 @@ interface CalculationState {
             updateCallback.updateState(DefineOperation())
             updateCallback.updateInput()
             updateCallback.updateResult("")
+        }
+
+        override fun divide(
+            repository: MainRepository,
+            calculationParts: CalculationParts,
+            updateCallback: UpdateCallback
+        ) {
+            if (calculationParts.right == "0") {
+                updateCallback.updateResult("infinity")
+                updateCallback.updateCalculationParts(CalculationParts())
+                updateCallback.updateState(DefiningLeft())
+            } else {
+                val result = calculationParts.calculate(repository)
+                updateCallback.updateCalculationParts(
+                    CalculationParts(
+                        left = result, operation = "/"
+                    )
+                )
+                updateCallback.updateState(DefineOperation())
+                updateCallback.updateInput()
+                updateCallback.updateResult("")
+            }
         }
     }
 }

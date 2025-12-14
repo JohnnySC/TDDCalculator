@@ -10,6 +10,8 @@ interface MainRepository {
 
     fun multiply(left: String, right: String): String
 
+    fun divide(left: String, right: String): String
+
     class Base : MainRepository {
 
         override fun sum(left: String, right: String): String {
@@ -22,6 +24,11 @@ interface MainRepository {
 
         override fun multiply(left: String, right: String): String {
             return BigInteger(left).multiply(BigInteger(right)).toString()
+        }
+
+        override fun divide(left: String, right: String): String {
+            //todo divideAndRemainder for decimals
+            return BigInteger(left).divide(BigInteger(right)).toString()
         }
     }
 }
