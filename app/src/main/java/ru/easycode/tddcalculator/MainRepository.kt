@@ -16,15 +16,15 @@ interface MainRepository {
     class Base : MainRepository {
 
         override fun sum(left: String, right: String): String {
-            return BigInteger(left).plus(BigInteger(right)).toString()
+            return BigDecimal(left).plus(BigDecimal(right)).toString()
         }
 
         override fun diff(left: String, right: String): String {
-            return BigInteger(left).minus(BigInteger(right)).toString()
+            return BigDecimal(left).minus(BigDecimal(right)).toString()
         }
 
         override fun multiply(left: String, right: String): String {
-            return BigInteger(left).multiply(BigInteger(right)).toString()
+            return BigDecimal(left).multiply(BigDecimal(right)).toString()
         }
 
         override fun divide(left: String, right: String): String {
