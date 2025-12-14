@@ -16,3 +16,5 @@ Episode 4 : https://youtu.be/59yjCZfPqDg
 Episode 5 : https://youtu.be/SQFoiFZXMU8
 
 Episode 6 : https://youtu.be/anugS592yGI
+
+Episode 7: https://youtu.be/l5BBLew8bfM
