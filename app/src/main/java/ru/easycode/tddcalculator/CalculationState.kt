@@ -281,7 +281,8 @@ interface CalculationState {
             updateCallback: UpdateCallback
         ) {
             if (calculationParts.right == "0" && calculationParts.operation == "/") {
-                updateCallback.updateResult("infinity")
+                val result = if (calculationParts.left == "0") "uncertainty" else "infinity"
+                updateCallback.updateResult(result)
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateState(DefiningLeft())
             } else {
@@ -346,7 +347,8 @@ interface CalculationState {
             updateCallback: UpdateCallback
         ) {
             if (calculationParts.right == "0") {
-                updateCallback.updateResult("infinity")
+                val result = if (calculationParts.left == "0") "uncertainty" else "infinity"
+                updateCallback.updateResult(result)
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateState(DefiningLeft())
             } else {
