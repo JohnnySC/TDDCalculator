@@ -9,5 +9,6 @@ interface MainActions {
     fun plus()
     fun minus()
     fun multiply()
+    fun divide()
     fun calculate()
 }
