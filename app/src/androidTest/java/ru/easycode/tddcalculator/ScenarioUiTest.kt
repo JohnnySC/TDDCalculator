@@ -703,4 +703,28 @@ class ScenarioUiTest {
         mainPage.assertInputField("1")
         mainPage.assertResult("")
     }
+
+    //102/12 = 8.5
+    @Test
+    fun divide_decimal() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("10")
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("102")
+
+        mainPage.clickOperationDivideButton()
+        mainPage.assertInputField("102/")
+
+        mainPage.assertInputField("1")
+        mainPage.assertInputField("102/1")
+
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("102/12")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("102/12")
+        mainPage.assertResult("8.5")
+    }
 }
