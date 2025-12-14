@@ -717,7 +717,7 @@ class ScenarioUiTest {
         mainPage.clickOperationDivideButton()
         mainPage.assertInputField("102/")
 
-        mainPage.assertInputField("1")
+        mainPage.clickNumberOneButton()
         mainPage.assertInputField("102/1")
 
         mainPage.clickNumberTwoButton()

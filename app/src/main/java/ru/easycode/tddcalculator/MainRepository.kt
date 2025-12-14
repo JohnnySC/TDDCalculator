@@ -1,5 +1,6 @@
 package ru.easycode.tddcalculator
 
+import java.math.BigDecimal
 import java.math.BigInteger
 
 interface MainRepository {
@@ -27,8 +28,8 @@ interface MainRepository {
         }
 
         override fun divide(left: String, right: String): String {
-            //todo divideAndRemainder for decimals
-            return BigInteger(left).divide(BigInteger(right)).toString()
+            val result = BigDecimal(left).divide(BigDecimal(right))
+            return result.toString()
         }
     }
 }
