@@ -655,4 +655,52 @@ class ScenarioUiTest {
         mainPage.assertInputField("22*10")
         mainPage.assertResult("220")
     }
+
+    //23. divide a number by zero
+    @Test
+    fun divide_number_by_zero() {
+        repeat(3) {
+            mainPage.clickOperationDivideButton()
+            mainPage.assertInputField("")
+        }
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        repeat(3) {
+            mainPage.clickOperationDivideButton()
+            mainPage.assertInputField("1/")
+        }
+
+        repeat(3) {
+            mainPage.clickNumberZero()
+            mainPage.assertInputField("1/0")
+        }
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("1/0")
+        mainPage.assertResult("infinity")
+    }
+
+    @Test
+    fun divide_by_zero_and_then_operation() {
+        divide_number_by_zero()
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.assertResult("")
+    }
+
+    @Test
+    fun divide_by_zero_and_then_number() {
+        divide_number_by_zero()
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.assertResult("")
+    }
 }
