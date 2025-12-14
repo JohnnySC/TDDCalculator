@@ -727,4 +727,18 @@ class ScenarioUiTest {
         mainPage.assertInputField("102/12")
         mainPage.assertResult("8.5")
     }
+
+    @Test
+    fun sum_of_decimals() {
+        divide_decimal()
+
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("8.5+")
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("8.5+1")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("8.5+1")
+        mainPage.assertResult("9.5")
+    }
 }
