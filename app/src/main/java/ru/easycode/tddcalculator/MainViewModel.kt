@@ -65,6 +65,14 @@ class MainViewModel(
     override fun calculate() {
         state.calculate(repository, calculationParts, this)
     }
+
+    override fun backspace() {
+        state.backspace(calculationParts, this)
+    }
+
+    override fun clearAll() {
+        state.clear(this)
+    }
 }
 
 interface UpdateCallback {
