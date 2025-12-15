@@ -66,6 +66,13 @@ class MainPage(composeTestRule: ComposeContentTestRule) {
                     hasClickAction()
         )
 
+    private val clearAllButton =
+        composeTestRule.onNode(
+            hasTestTag("clear button") and
+                    hasText("C") and
+                    hasClickAction()
+        )
+
     private val inputText = composeTestRule.onNode(
         hasTestTag("input text") and
                 hasNoClickAction()
@@ -114,5 +121,9 @@ class MainPage(composeTestRule: ComposeContentTestRule) {
 
     fun clickNumberZero() {
         numberZeroButton.performClick()
+    }
+
+    fun clearAll() {
+        clearAllButton.performClick()
     }
 }
