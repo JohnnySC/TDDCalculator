@@ -65,6 +65,10 @@ class MainViewModel(
     override fun calculate() {
         state.calculate(repository, calculationParts, this)
     }
+
+    override fun clearAll() {
+        TODO("Not yet implemented")
+    }
 }
 
 interface UpdateCallback {

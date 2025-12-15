@@ -53,6 +53,7 @@ fun MainScreen(input: String, result: String, actions: MainActions) {
             CalculatorButton("multiply button", "*", actions::multiply)
             CalculatorButton("divide button", "/", actions::divide)
             CalculatorButton("equals button", "=", actions::calculate)
+            CalculatorButton("clear button", "C", actions::clearAll)
         }
     }
 }
@@ -69,6 +70,7 @@ fun PreviewMainScreen() {
         override fun divide() = Unit
         override fun calculate() = Unit
         override fun inputZero() = Unit
+        override fun clearAll() = Unit
     })
 }
 

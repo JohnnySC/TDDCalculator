@@ -11,4 +11,5 @@ interface MainActions {
     fun multiply()
     fun divide()
     fun calculate()
+    fun clearAll()
 }
