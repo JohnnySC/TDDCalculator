@@ -67,7 +67,7 @@ class MainViewModel(
     }
 
     override fun backspace() {
-
+        state.backspace(calculationParts, this)
     }
 
     override fun clearAll() {

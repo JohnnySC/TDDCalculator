@@ -16,6 +16,11 @@ interface CalculationState {
         updateCallback: UpdateCallback
     ) = Unit
 
+    fun backspace(
+        calculationParts: CalculationParts,
+        updateCallback: UpdateCallback
+    )
+
     fun plus(
         repository: MainRepository,
         calculationParts: CalculationParts,
@@ -69,6 +74,17 @@ interface CalculationState {
             if (calculationParts.left == "-") return
             val newCalculationParts = CalculationParts(left = calculationParts.left + "0")
             updateCallback.updateCalculationParts(newCalculationParts)
+            updateCallback.updateInput()
+            updateCallback.updateResult("")
+        }
+
+        override fun backspace(
+            calculationParts: CalculationParts,
+            updateCallback: UpdateCallback
+        ) {
+            updateCallback.updateCalculationParts(
+                CalculationParts(left = calculationParts.left.dropLast(1))
+            )
             updateCallback.updateInput()
             updateCallback.updateResult("")
         }
@@ -181,6 +197,15 @@ interface CalculationState {
         override fun inputZero(
             calculationParts: CalculationParts, updateCallback: UpdateCallback
         ) = inputNumber("0", calculationParts, updateCallback)
+
+        override fun backspace(
+            calculationParts: CalculationParts,
+            updateCallback: UpdateCallback
+        ) {
+            updateCallback.updateCalculationParts(CalculationParts(left = calculationParts.left))
+            updateCallback.updateInput()
+            updateCallback.updateState(DefiningLeft())
+        }
 
         override fun plus(
             repository: MainRepository,
@@ -297,6 +322,31 @@ interface CalculationState {
                 updateCallback.updateResult(result)
                 updateCallback.updateState(DefiningLeft())
                 updateCallback.updateCalculationParts(CalculationParts(left = result))
+            }
+        }
+
+        override fun backspace(
+            calculationParts: CalculationParts,
+            updateCallback: UpdateCallback
+        ) {
+            if (calculationParts.right.length == 1) {
+                updateCallback.updateState(DefineOperation())
+                updateCallback.updateCalculationParts(
+                    CalculationParts(
+                        left = calculationParts.left,
+                        operation = calculationParts.operation
+                    )
+                )
+                updateCallback.updateInput()
+            } else {
+                updateCallback.updateCalculationParts(
+                    CalculationParts(
+                        left = calculationParts.left,
+                        operation = calculationParts.operation,
+                        right = calculationParts.right.dropLast(1)
+                    )
+                )
+                updateCallback.updateInput()
             }
         }
 
