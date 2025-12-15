@@ -11,7 +11,7 @@ Episode 2 : https://youtu.be/t0HyUaOjNXQ
 
 Episode 3 : https://youtu.be/nplmT0LP8BI
 
-Private videos on YouTube
+Private videos on YouTube (get an access on telegram https://t.me/easyCodeRu)
 
 Episode 4 : https://youtu.be/59yjCZfPqDg
 
