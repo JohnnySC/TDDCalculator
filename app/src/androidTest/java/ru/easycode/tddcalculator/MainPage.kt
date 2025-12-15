@@ -123,7 +123,7 @@ class MainPage(composeTestRule: ComposeContentTestRule) {
         numberZeroButton.performClick()
     }
 
-    fun clearAll() {
+    fun clickClearAll() {
         clearAllButton.performClick()
     }
 }

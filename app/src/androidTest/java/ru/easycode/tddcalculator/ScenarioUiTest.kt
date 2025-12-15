@@ -782,12 +782,12 @@ class ScenarioUiTest {
 
     @Test
     fun clear_all() {
-        mainPage.clearAll()
+        mainPage.clickClearAll()
 
         mainPage.clickNumberOneButton()
         mainPage.assertInputField("1")
 
-        mainPage.clearAll()
+        mainPage.clickClearAll()
         mainPage.assertInputField("")
 
         mainPage.clickNumberOneButton()
@@ -795,7 +795,7 @@ class ScenarioUiTest {
         mainPage.clickOperationPlusButton()
         mainPage.assertInputField("1+")
 
-        mainPage.clearAll()
+        mainPage.clickClearAll()
         mainPage.assertInputField("")
 
         mainPage.clickNumberOneButton()
@@ -805,7 +805,7 @@ class ScenarioUiTest {
         mainPage.clickNumberTwoButton()
         mainPage.assertInputField("1+2")
 
-        mainPage.clearAll()
+        mainPage.clickClearAll()
         mainPage.assertInputField("")
 
         mainPage.clickNumberOneButton()
@@ -818,7 +818,7 @@ class ScenarioUiTest {
         mainPage.assertInputField("1+2")
         mainPage.assertResult("3")
 
-        mainPage.clearAll()
+        mainPage.clickClearAll()
         mainPage.assertInputField("")
         mainPage.assertResult("")
 
