@@ -66,6 +66,10 @@ class MainViewModel(
         state.calculate(repository, calculationParts, this)
     }
 
+    override fun backspace() {
+
+    }
+
     override fun clearAll() {
         state.clear(this)
     }

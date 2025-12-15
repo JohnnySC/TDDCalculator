@@ -46,6 +46,7 @@ fun MainScreen(input: String, result: String, actions: MainActions) {
             CalculatorButton("number one button", "1", actions::inputOne)
             CalculatorButton("number two button", "2", actions::inputTwo)
             CalculatorButton("number zero button", "0", actions::inputZero)
+            CalculatorButton("backspace button", "x", actions::backspace)
         }
         Row {
             CalculatorButton("plus button", "+", actions::plus)
@@ -70,6 +71,7 @@ fun PreviewMainScreen() {
         override fun divide() = Unit
         override fun calculate() = Unit
         override fun inputZero() = Unit
+        override fun backspace() = Unit
         override fun clearAll() = Unit
     })
 }
