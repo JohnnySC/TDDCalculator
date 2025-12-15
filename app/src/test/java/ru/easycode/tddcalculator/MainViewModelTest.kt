@@ -599,6 +599,58 @@ class MainViewModelTest {
         assertEquals("-1", resultFlow.value)
     }
 
+    @Test
+    fun clear_all() {
+        viewModel.clearAll()
+
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+
+        viewModel.clearAll()
+        assertEquals("", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+        viewModel.plus()
+        assertEquals("1+", inputFlow.value)
+
+        viewModel.clearAll()
+        assertEquals("", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+        viewModel.plus()
+        assertEquals("1+", inputFlow.value)
+        viewModel.inputTwo()
+        assertEquals("1+2", inputFlow.value)
+
+        viewModel.clearAll()
+        assertEquals("", inputFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+        viewModel.plus()
+        assertEquals("1+", inputFlow.value)
+        viewModel.inputTwo()
+        assertEquals("1+2", inputFlow.value)
+        viewModel.calculate()
+        assertEquals("1+2", inputFlow.value)
+        assertEquals("3", resultFlow.value)
+
+        viewModel.clearAll()
+        assertEquals("", inputFlow.value)
+        assertEquals("", resultFlow.value)
+
+        viewModel.inputOne()
+        assertEquals("1", inputFlow.value)
+        viewModel.plus()
+        assertEquals("1+", inputFlow.value)
+        viewModel.inputTwo()
+        assertEquals("1+2", inputFlow.value)
+        viewModel.calculate()
+        assertEquals("1+2", inputFlow.value)
+        assertEquals("3", resultFlow.value)
+    }
 }
 
 private class FakeMainRepository(
