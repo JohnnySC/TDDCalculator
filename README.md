@@ -20,3 +20,5 @@ Episode 5 : https://youtu.be/SQFoiFZXMU8
 Episode 6 : https://youtu.be/anugS592yGI
 
 Episode 7: https://youtu.be/l5BBLew8bfM
+
+Episode 8: https://youtu.be/xernLkkx00s
