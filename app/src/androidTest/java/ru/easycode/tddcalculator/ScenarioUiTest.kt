@@ -783,6 +783,8 @@ class ScenarioUiTest {
     @Test
     fun clear_all() {
         mainPage.clickClearAll()
+        mainPage.assertInputField("")
+        mainPage.assertResult("")
 
         mainPage.clickNumberOneButton()
         mainPage.assertInputField("1")
@@ -831,5 +833,56 @@ class ScenarioUiTest {
         mainPage.clickEqualsButton()
         mainPage.assertInputField("1+2")
         mainPage.assertResult("3")
+    }
+
+    @Test
+    fun backspace() {
+        mainPage.clickBackspace()
+        mainPage.assertInputField("")
+        mainPage.assertResult("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        mainPage.clickBackspace()
+        mainPage.assertInputField("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("1+")
+
+        mainPage.clickBackspace()
+        mainPage.assertInputField("1")
+        mainPage.clickBackspace()
+        mainPage.assertInputField("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("1+")
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("1+2")
+
+        mainPage.clickBackspace()
+        mainPage.assertInputField("1+")
+        mainPage.clickBackspace()
+        mainPage.assertInputField("1")
+        mainPage.clickBackspace()
+        mainPage.assertInputField("")
+
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+        mainPage.clickOperationPlusButton()
+        mainPage.assertInputField("1+")
+        mainPage.clickNumberTwoButton()
+        mainPage.assertInputField("1+2")
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("1+2")
+        mainPage.assertResult("3")
+
+        mainPage.clickBackspace()
+        mainPage.assertInputField("")
+        mainPage.assertResult("")
     }
 }
