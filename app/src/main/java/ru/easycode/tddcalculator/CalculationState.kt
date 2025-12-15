@@ -34,11 +34,18 @@ interface CalculationState {
         updateCallback: UpdateCallback
     )
 
-     fun divide(
+    fun divide(
         repository: MainRepository,
         calculationParts: CalculationParts,
         updateCallback: UpdateCallback
     )
+
+    fun clear(updateCallback: UpdateCallback) = with(updateCallback) {
+        updateState(DefiningLeft())
+        updateCalculationParts(CalculationParts())
+        updateInput()
+        updateResult("")
+    }
 
     class DefiningLeft : CalculationState {
 

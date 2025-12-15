@@ -67,7 +67,7 @@ class MainViewModel(
     }
 
     override fun clearAll() {
-        TODO("Not yet implemented")
+        state.clear(this)
     }
 }
 
