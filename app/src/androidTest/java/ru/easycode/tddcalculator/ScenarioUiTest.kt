@@ -1075,8 +1075,14 @@ class ScenarioUiTest {
         clickNumberTwoButton()
         assertInputField("3*2")
 
+        clickDotButton()
+        assertInputField("3*2.")
+
+        clickNumberOneButton()
+        assertInputField("3*2.1")
+
         clickEqualsButton()
-        assertInputField("3*2")
-        assertResult("6")
+        assertInputField("3*2.1")
+        assertResult("6.3")
     }
 }
