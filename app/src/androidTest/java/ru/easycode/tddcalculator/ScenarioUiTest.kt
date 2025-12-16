@@ -1042,7 +1042,7 @@ class ScenarioUiTest {
 
         repeat(3) {
             clickDotButton()
-            assertInputField("12.01+20.1")
+            assertInputField("12.01+20.12")
             assertResult("32.13")
         }
 
