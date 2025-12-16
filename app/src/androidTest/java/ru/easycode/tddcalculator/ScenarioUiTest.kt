@@ -185,6 +185,23 @@ class ScenarioUiTest {
         mainPage.assertResult("19")
     }
 
+    @Test
+    fun prevent_minus_dot() = with(mainPage) {
+        clickOperationMinusButton()
+        assertInputField("-")
+        clickDotButton()
+        assertInputField("-")
+        clickNumberOneButton()
+        assertInputField("-1")
+        clickOperationMultiplyButton()
+        assertInputField("-1*")
+        clickNumberTwoButton()
+        assertInputField("-1*2")
+        clickEqualsButton()
+        assertInputField("-1*2")
+        assertResult("-2")
+    }
+
     //8. N +M N = result
     @Test
     fun prevent_multiple_plus_operations() {
