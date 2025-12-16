@@ -109,6 +109,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.left.endsWith("."))
+                return
             if (calculationParts.left.isEmpty()) {
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateInput()
@@ -134,6 +136,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.left.endsWith("."))
+                return
             if (calculationParts.left == "-") return
             if (calculationParts.left.isEmpty()) {
                 updateCallback.updateCalculationParts(CalculationParts(left = "-"))
@@ -154,6 +158,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.left.endsWith("."))
+                return
             if (calculationParts.left.isEmpty()) {
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateInput()
@@ -175,6 +181,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.left.endsWith("."))
+                return
             if (calculationParts.left.isEmpty()) {
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateInput()
@@ -348,6 +356,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.right.endsWith("."))
+                return
             if (calculationParts.right == "0" && calculationParts.operation == "/") {
                 val result = if (calculationParts.left == "0") "uncertainty" else "infinity"
                 updateCallback.updateResult(result)
@@ -391,6 +401,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.right.endsWith("."))
+                return
             val result = calculationParts.calculate(repository)
             updateCallback.updateCalculationParts(
                 CalculationParts(
@@ -407,6 +419,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.right.endsWith("."))
+                return
             val result = calculationParts.calculate(repository)
             updateCallback.updateCalculationParts(
                 CalculationParts(
@@ -423,6 +437,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.right.endsWith("."))
+                return
             val result = calculationParts.calculate(repository)
             updateCallback.updateCalculationParts(
                 CalculationParts(
@@ -439,6 +455,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.right.endsWith("."))
+                return
             if (calculationParts.right == "0") {
                 val result = if (calculationParts.left == "0") "uncertainty" else "infinity"
                 updateCallback.updateResult(result)
