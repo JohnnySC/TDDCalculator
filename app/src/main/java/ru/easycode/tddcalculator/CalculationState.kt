@@ -10,6 +10,10 @@ interface CalculationState {
         calculationParts: CalculationParts, updateCallback: UpdateCallback
     )
 
+    fun inputDot(
+        calculationParts: CalculationParts, updateCallback: UpdateCallback
+    )
+
     fun calculate(
         repository: MainRepository,
         calculationParts: CalculationParts,
@@ -74,6 +78,17 @@ interface CalculationState {
             if (calculationParts.left == "-") return
             val newCalculationParts = CalculationParts(left = calculationParts.left + "0")
             updateCallback.updateCalculationParts(newCalculationParts)
+            updateCallback.updateInput()
+            updateCallback.updateResult("")
+        }
+
+        override fun inputDot(
+            calculationParts: CalculationParts,
+            updateCallback: UpdateCallback
+        ) {
+            if (calculationParts.left.isEmpty()) return
+            if (calculationParts.left.contains(".")) return
+            updateCallback.updateCalculationParts(CalculationParts(left = calculationParts.left + "."))
             updateCallback.updateInput()
             updateCallback.updateResult("")
         }
@@ -198,6 +213,11 @@ interface CalculationState {
             calculationParts: CalculationParts, updateCallback: UpdateCallback
         ) = inputNumber("0", calculationParts, updateCallback)
 
+        override fun inputDot(
+            calculationParts: CalculationParts,
+            updateCallback: UpdateCallback
+        ) = Unit
+
         override fun backspace(
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
@@ -303,6 +323,22 @@ interface CalculationState {
                 right = calculationParts.right + "0"
             )
             updateCallback.updateCalculationParts(newCalculationParts)
+            updateCallback.updateInput()
+            updateCallback.updateResult("")
+        }
+
+        override fun inputDot(
+            calculationParts: CalculationParts,
+            updateCallback: UpdateCallback
+        ) {
+            if (calculationParts.right.contains(".")) return
+            updateCallback.updateCalculationParts(
+                CalculationParts(
+                    left = calculationParts.left,
+                    operation = calculationParts.operation,
+                    right = calculationParts.right + "."
+                )
+            )
             updateCallback.updateInput()
             updateCallback.updateResult("")
         }

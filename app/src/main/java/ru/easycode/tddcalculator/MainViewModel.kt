@@ -47,7 +47,7 @@ class MainViewModel(
     }
 
     override fun inputDot() {
-
+        state.inputDot(calculationParts, this)
     }
 
     override fun plus() {
