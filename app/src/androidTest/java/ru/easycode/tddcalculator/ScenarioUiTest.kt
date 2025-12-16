@@ -445,6 +445,37 @@ class ScenarioUiTest {
         }
     }
 
+    @Test
+    fun not_number_after_dot() = with(mainPage) {
+        clickNumberOneButton()
+        assertInputField("1")
+        clickDotButton()
+        assertInputField("1.")
+        clickOperationPlusButton()
+        assertInputField("1.")
+        clickEqualsButton()
+        assertInputField("1.")
+        assertResult("")
+
+        clickNumberZero()
+        assertInputField("1.0")
+        clickOperationDivideButton()
+        assertInputField("1.0/")
+        clickNumberZero()
+        assertInputField("1.0/0")
+        clickDotButton()
+        assertInputField("1.0/0.")
+        clickEqualsButton()
+        assertInputField("1.0/0.")
+        clickOperationPlusButton()
+        assertInputField("1.0/0.")
+        clickNumberOneButton()
+        assertInputField("1.0/0.1")
+        clickEqualsButton()
+        assertInputField("1.0/0.1")
+        assertResult("10")
+    }
+
     //16. =M N =M - =M N =M result
     @Test
     fun prevent_equals_after_minus() {
