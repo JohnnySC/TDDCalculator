@@ -80,6 +80,13 @@ class MainPage(composeTestRule: ComposeContentTestRule) {
                     hasClickAction()
         )
 
+    private val dotButton =
+        composeTestRule.onNode(
+            hasTestTag("dot button") and
+                    hasText(".") and
+                    hasClickAction()
+        )
+
     private val inputText = composeTestRule.onNode(
         hasTestTag("input text") and
                 hasNoClickAction()
@@ -136,5 +143,9 @@ class MainPage(composeTestRule: ComposeContentTestRule) {
 
     fun clickBackspace() {
         backspaceButton.performClick()
+    }
+
+    fun clickDotButton() {
+        dotButton.performClick()
     }
 }
