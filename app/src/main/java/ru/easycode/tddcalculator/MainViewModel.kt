@@ -46,6 +46,10 @@ class MainViewModel(
         state.inputZero(calculationParts, this)
     }
 
+    override fun inputDot() {
+        state.inputDot(calculationParts, this)
+    }
+
     override fun plus() {
         state.plus(repository, calculationParts, this)
     }

@@ -984,4 +984,105 @@ class ScenarioUiTest {
         mainPage.assertInputField("3*2")
         mainPage.assertResult("6")
     }
+
+    //12.01 + 20.12 =
+    @Test
+    fun dot() = with(mainPage) {
+        repeat(3) {
+            clickDotButton()
+            assertInputField("")
+        }
+        clickNumberOneButton()
+        assertInputField("1")
+        clickNumberTwoButton()
+        assertInputField("12")
+        repeat(3) {
+            clickDotButton()
+            assertInputField("12.")
+        }
+        clickNumberZero()
+        assertInputField("12.0")
+        repeat(3) {
+            clickDotButton()
+            assertInputField("12.0")
+        }
+        clickNumberOneButton()
+        assertInputField("12.01")
+
+        clickOperationPlusButton()
+        assertInputField("12.01+")
+
+        repeat(3) {
+            clickDotButton()
+            assertInputField("12.01+")
+        }
+        clickNumberTwoButton()
+        assertInputField("12.01+2")
+        clickNumberZero()
+        assertInputField("12.01+20")
+
+        repeat(3) {
+            clickDotButton()
+            assertInputField("12.01+20.")
+        }
+
+        clickNumberOneButton()
+        assertInputField("12.01+20.1")
+
+        repeat(3) {
+            clickDotButton()
+            assertInputField("12.01+20.1")
+        }
+        clickNumberTwoButton()
+        assertInputField("12.01+20.12")
+
+        clickEqualsButton()
+        assertInputField("12.01+20.12")
+        assertResult("32.13")
+
+        repeat(3) {
+            clickDotButton()
+            assertInputField("12.01+20.12")
+            assertResult("32.13")
+        }
+
+        clickClearAll()
+        assertInputField("")
+        assertResult("")
+
+        clickNumberOneButton()
+        assertInputField("1")
+
+        clickOperationPlusButton()
+        assertInputField("1+")
+
+        clickNumberTwoButton()
+        assertInputField("1+2")
+
+        clickEqualsButton()
+        assertInputField("1+2")
+        assertResult("3")
+
+        clickDotButton()
+        assertInputField("3.")
+        assertResult("")
+
+        clickBackspace()
+        assertInputField("3")
+
+        clickOperationMultiplyButton()
+        assertInputField("3*")
+        clickNumberTwoButton()
+        assertInputField("3*2")
+
+        clickDotButton()
+        assertInputField("3*2.")
+
+        clickNumberOneButton()
+        assertInputField("3*2.1")
+
+        clickEqualsButton()
+        assertInputField("3*2.1")
+        assertResult("6.3")
+    }
 }
