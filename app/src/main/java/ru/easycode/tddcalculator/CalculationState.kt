@@ -1,5 +1,7 @@
 package ru.easycode.tddcalculator
 
+import java.math.BigDecimal
+
 interface CalculationState {
 
     fun inputNumber(
@@ -87,6 +89,7 @@ interface CalculationState {
             updateCallback: UpdateCallback
         ) {
             if (calculationParts.left.isEmpty()) return
+            if (calculationParts.left == "-") return
             if (calculationParts.left.contains(".")) return
             updateCallback.updateCalculationParts(CalculationParts(left = calculationParts.left + "."))
             updateCallback.updateInput()
@@ -109,6 +112,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.left.endsWith("."))
+                return
             if (calculationParts.left.isEmpty()) {
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateInput()
@@ -134,6 +139,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.left.endsWith("."))
+                return
             if (calculationParts.left == "-") return
             if (calculationParts.left.isEmpty()) {
                 updateCallback.updateCalculationParts(CalculationParts(left = "-"))
@@ -154,6 +161,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.left.endsWith("."))
+                return
             if (calculationParts.left.isEmpty()) {
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateInput()
@@ -175,6 +184,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.left.endsWith("."))
+                return
             if (calculationParts.left.isEmpty()) {
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateInput()
@@ -348,8 +359,10 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
-            if (calculationParts.right == "0" && calculationParts.operation == "/") {
-                val result = if (calculationParts.left == "0") "uncertainty" else "infinity"
+            if (calculationParts.right.endsWith("."))
+                return
+            if (BigDecimal(calculationParts.right).compareTo(BigDecimal.ZERO) == 0 && calculationParts.operation == "/") {
+                val result = if (BigDecimal(calculationParts.left).compareTo(BigDecimal.ZERO) == 0) "uncertainty" else "infinity"
                 updateCallback.updateResult(result)
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateState(DefiningLeft())
@@ -391,6 +404,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.right.endsWith("."))
+                return
             val result = calculationParts.calculate(repository)
             updateCallback.updateCalculationParts(
                 CalculationParts(
@@ -407,6 +422,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.right.endsWith("."))
+                return
             val result = calculationParts.calculate(repository)
             updateCallback.updateCalculationParts(
                 CalculationParts(
@@ -423,6 +440,8 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
+            if (calculationParts.right.endsWith("."))
+                return
             val result = calculationParts.calculate(repository)
             updateCallback.updateCalculationParts(
                 CalculationParts(
@@ -439,8 +458,10 @@ interface CalculationState {
             calculationParts: CalculationParts,
             updateCallback: UpdateCallback
         ) {
-            if (calculationParts.right == "0") {
-                val result = if (calculationParts.left == "0") "uncertainty" else "infinity"
+            if (calculationParts.right.endsWith("."))
+                return
+            if (BigDecimal(calculationParts.right).compareTo(BigDecimal.ZERO) == 0) {
+                val result = if (BigDecimal(calculationParts.left).compareTo(BigDecimal.ZERO) == 0) "uncertainty" else "infinity"
                 updateCallback.updateResult(result)
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateState(DefiningLeft())

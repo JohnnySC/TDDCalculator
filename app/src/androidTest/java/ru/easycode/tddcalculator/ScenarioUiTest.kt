@@ -185,6 +185,23 @@ class ScenarioUiTest {
         mainPage.assertResult("19")
     }
 
+    @Test
+    fun prevent_minus_dot() = with(mainPage) {
+        clickOperationMinusButton()
+        assertInputField("-")
+        clickDotButton()
+        assertInputField("-")
+        clickNumberOneButton()
+        assertInputField("-1")
+        clickOperationMultiplyButton()
+        assertInputField("-1*")
+        clickNumberTwoButton()
+        assertInputField("-1*2")
+        clickEqualsButton()
+        assertInputField("-1*2")
+        assertResult("-2")
+    }
+
     //8. N +M N = result
     @Test
     fun prevent_multiple_plus_operations() {
@@ -445,6 +462,37 @@ class ScenarioUiTest {
         }
     }
 
+    @Test
+    fun not_number_after_dot() = with(mainPage) {
+        clickNumberOneButton()
+        assertInputField("1")
+        clickDotButton()
+        assertInputField("1.")
+        clickOperationPlusButton()
+        assertInputField("1.")
+        clickEqualsButton()
+        assertInputField("1.")
+        assertResult("")
+
+        clickNumberZero()
+        assertInputField("1.0")
+        clickOperationDivideButton()
+        assertInputField("1.0/")
+        clickNumberZero()
+        assertInputField("1.0/0")
+        clickDotButton()
+        assertInputField("1.0/0.")
+        clickEqualsButton()
+        assertInputField("1.0/0.")
+        clickOperationPlusButton()
+        assertInputField("1.0/0.")
+        clickNumberOneButton()
+        assertInputField("1.0/0.1")
+        clickEqualsButton()
+        assertInputField("1.0/0.1")
+        assertResult("10")
+    }
+
     //16. =M N =M - =M N =M result
     @Test
     fun prevent_equals_after_minus() {
@@ -679,6 +727,28 @@ class ScenarioUiTest {
 
         mainPage.clickEqualsButton()
         mainPage.assertInputField("1/0")
+        mainPage.assertResult("infinity")
+    }
+
+    @Test
+    fun divide_number_by_zero_decimal() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        mainPage.clickOperationDivideButton()
+        mainPage.assertInputField("1/")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("1/0")
+
+        mainPage.clickDotButton()
+        mainPage.assertInputField("1/0.")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("1/0.0")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("1/0.0")
         mainPage.assertResult("infinity")
     }
 
