@@ -714,6 +714,28 @@ class ScenarioUiTest {
     }
 
     @Test
+    fun divide_number_by_zero_decimal() {
+        mainPage.clickNumberOneButton()
+        mainPage.assertInputField("1")
+
+        mainPage.clickOperationDivideButton()
+        mainPage.assertInputField("1/")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("1/0")
+
+        mainPage.clickDotButton()
+        mainPage.assertInputField("1/0.")
+
+        mainPage.clickNumberZero()
+        mainPage.assertInputField("1/0.0")
+
+        mainPage.clickEqualsButton()
+        mainPage.assertInputField("1/0.0")
+        mainPage.assertResult("infinity")
+    }
+
+    @Test
     fun divide_by_zero_and_then_operation() {
         divide_number_by_zero()
 
