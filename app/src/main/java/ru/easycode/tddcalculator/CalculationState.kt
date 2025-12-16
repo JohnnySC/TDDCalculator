@@ -89,6 +89,7 @@ interface CalculationState {
             updateCallback: UpdateCallback
         ) {
             if (calculationParts.left.isEmpty()) return
+            if (calculationParts.left == "-") return
             if (calculationParts.left.contains(".")) return
             updateCallback.updateCalculationParts(CalculationParts(left = calculationParts.left + "."))
             updateCallback.updateInput()
