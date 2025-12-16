@@ -1,5 +1,7 @@
 package ru.easycode.tddcalculator
 
+import java.math.BigDecimal
+
 interface CalculationState {
 
     fun inputNumber(
@@ -358,8 +360,8 @@ interface CalculationState {
         ) {
             if (calculationParts.right.endsWith("."))
                 return
-            if (calculationParts.right == "0" && calculationParts.operation == "/") {
-                val result = if (calculationParts.left == "0") "uncertainty" else "infinity"
+            if (BigDecimal(calculationParts.right).compareTo(BigDecimal.ZERO) == 0 && calculationParts.operation == "/") {
+                val result = if (BigDecimal(calculationParts.left).compareTo(BigDecimal.ZERO) == 0) "uncertainty" else "infinity"
                 updateCallback.updateResult(result)
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateState(DefiningLeft())
@@ -457,8 +459,8 @@ interface CalculationState {
         ) {
             if (calculationParts.right.endsWith("."))
                 return
-            if (calculationParts.right == "0") {
-                val result = if (calculationParts.left == "0") "uncertainty" else "infinity"
+            if (BigDecimal(calculationParts.right).compareTo(BigDecimal.ZERO) == 0) {
+                val result = if (BigDecimal(calculationParts.left).compareTo(BigDecimal.ZERO) == 0) "uncertainty" else "infinity"
                 updateCallback.updateResult(result)
                 updateCallback.updateCalculationParts(CalculationParts())
                 updateCallback.updateState(DefiningLeft())
