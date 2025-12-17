@@ -6,12 +6,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/**
- * N: number (1 - 9)
- * 0: zero
- * M: Multiple repetitions
- * MAX: max value
- */
 @RunWith(AndroidJUnit4::class)
 class ScenarioUiTest {
 
@@ -20,1139 +14,1287 @@ class ScenarioUiTest {
 
     private val mainPage = MainPage(composeTestRule)
 
-    //1. N + N = result
     @Test
-    fun sum_of_two_numbers() {
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "2")
+    fun sum_of_two_numbers() = with(mainPage) {
+        input("2")
+        assertInputField(expected = "2")
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField(expected = "2+")
+        plus()
+        assertInputField(expected = "2+")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "2+1")
+        input("1")
+        assertInputField(expected = "2+1")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "2+1")
-        mainPage.assertResult(expected = "3")
+        calculate()
+        assertInputField(expected = "2+1")
+        assertResult(expected = "3")
     }
 
-    //2. NM + NM = result
     @Test
-    fun sum_of_two_numbers_more_complex() {
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "2")
+    fun sum_of_two_numbers_more_complex() = with(mainPage) {
+        input("2")
+        assertInputField(expected = "2")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "21")
+        input("1")
+        assertInputField(expected = "21")
 
-        mainPage.clickNumberZero()
-        mainPage.assertInputField(expected = "210")
+        inputZero()
+        assertInputField(expected = "210")
 
-        mainPage.clickNumberZero()
-        mainPage.assertInputField(expected = "2100")
+        inputZero()
+        assertInputField(expected = "2100")
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField(expected = "2100+")
+        plus()
+        assertInputField(expected = "2100+")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "2100+1")
+        input("1")
+        assertInputField(expected = "2100+1")
 
-        mainPage.clickNumberZero()
-        mainPage.assertInputField(expected = "2100+10")
+        inputZero()
+        assertInputField(expected = "2100+10")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "2100+102")
+        input("2")
+        assertInputField(expected = "2100+102")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "2100+102")
-        mainPage.assertResult(expected = "2202")
+        calculate()
+        assertInputField(expected = "2100+102")
+        assertResult(expected = "2202")
     }
 
-    //3. N_MAX + N_MAX = result
     @Test
-    fun sum_of_two_numbers_corner_case() {
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "1")
+    fun sum_of_two_numbers_corner_case() = with(mainPage) {
+        input("1")
+        assertInputField(expected = "1")
 
         var expected = "1"
         repeat(9) {
-            mainPage.clickNumberZero()
+            inputZero()
             expected += "0"
-            mainPage.assertInputField(expected = expected)
+            assertInputField(expected = expected)
         }
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField(expected = "1000000000+")
+        plus()
+        assertInputField(expected = "1000000000+")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "1000000000+2")
+        input("2")
+        assertInputField(expected = "1000000000+2")
 
         expected = "1000000000+2"
         repeat(9) {
-            mainPage.clickNumberZero()
+            inputZero()
             expected += "0"
-            mainPage.assertInputField(expected = expected)
+            assertInputField(expected = expected)
         }
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "1000000000+2000000000")
-        mainPage.assertResult(expected = "3000000000")
+        calculate()
+        assertInputField(expected = "1000000000+2000000000")
+        assertResult(expected = "3000000000")
     }
 
-    //4. 0M + 0M = 0
     @Test
-    fun prevent_multiple_zeros() {
+    fun prevent_multiple_zeros() = with(mainPage) {
         repeat(10) {
-            mainPage.clickNumberZero()
-            mainPage.assertInputField(expected = "0")
+            inputZero()
+            assertInputField(expected = "0")
         }
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField(expected = "0+")
+        plus()
+        assertInputField(expected = "0+")
         repeat(10) {
-            mainPage.clickNumberZero()
-            mainPage.assertInputField(expected = "0+0")
+            inputZero()
+            assertInputField(expected = "0+0")
         }
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "0+0")
-        mainPage.assertResult(expected = "0")
+        calculate()
+        assertInputField(expected = "0+0")
+        assertResult(expected = "0")
     }
 
-    //5. 0M - 0M = 0
     @Test
-    fun prevent_multiple_zeros_minus_operation() {
+    fun prevent_multiple_zeros_minus_operation() = with(mainPage) {
         repeat(10) {
-            mainPage.clickNumberZero()
-            mainPage.assertInputField(expected = "0")
+            inputZero()
+            assertInputField(expected = "0")
         }
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField(expected = "0-")
+        minus()
+        assertInputField(expected = "0-")
         repeat(10) {
-            mainPage.clickNumberZero()
-            mainPage.assertInputField(expected = "0-0")
+            inputZero()
+            assertInputField(expected = "0-0")
         }
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "0-0")
-        mainPage.assertResult(expected = "0")
+        calculate()
+        assertInputField(expected = "0-0")
+        assertResult(expected = "0")
     }
 
-    //6. 0 N + 0 N = result
     @Test
-    fun prevent_leading_zeros() {
-        mainPage.clickNumberZero()
-        mainPage.assertInputField(expected = "0")
+    fun prevent_leading_zeros() = with(mainPage) {
+        inputZero()
+        assertInputField(expected = "0")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "1")
+        input("1")
+        assertInputField(expected = "1")
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField(expected = "1+")
+        plus()
+        assertInputField(expected = "1+")
 
-        mainPage.clickNumberZero()
-        mainPage.assertInputField(expected = "1+0")
+        inputZero()
+        assertInputField(expected = "1+0")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "1+2")
+        input("2")
+        assertInputField(expected = "1+2")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "1+2")
-        mainPage.assertResult(expected = "3")
+        calculate()
+        assertInputField(expected = "1+2")
+        assertResult(expected = "3")
     }
 
-    //7. - 0 N + N 0 = result
     @Test
-    fun prevent_minus_zero() {
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField(expected = "-")
+    fun prevent_minus_zero() = with(mainPage) {
+        minus()
+        assertInputField(expected = "-")
 
-        mainPage.clickNumberZero()
-        mainPage.assertInputField(expected = "-")
+        inputZero()
+        assertInputField(expected = "-")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "-1")
+        input("1")
+        assertInputField(expected = "-1")
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField(expected = "-1+")
+        plus()
+        assertInputField(expected = "-1+")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "-1+2")
+        input("2")
+        assertInputField(expected = "-1+2")
 
-        mainPage.clickNumberZero()
-        mainPage.assertInputField(expected = "-1+20")
+        inputZero()
+        assertInputField(expected = "-1+20")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "-1+20")
-        mainPage.assertResult("19")
+        calculate()
+        assertInputField(expected = "-1+20")
+        assertResult("19")
     }
 
     @Test
     fun prevent_minus_dot() = with(mainPage) {
-        clickOperationMinusButton()
+        minus()
         assertInputField("-")
-        clickDotButton()
+        inputDot()
         assertInputField("-")
-        clickNumberOneButton()
+        input("1")
         assertInputField("-1")
-        clickOperationMultiplyButton()
+        multiply()
         assertInputField("-1*")
-        clickNumberTwoButton()
+        input("2")
         assertInputField("-1*2")
-        clickEqualsButton()
+        calculate()
         assertInputField("-1*2")
         assertResult("-2")
     }
 
-    //8. N +M N = result
     @Test
-    fun prevent_multiple_plus_operations() {
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "2")
+    fun prevent_multiple_plus_operations() = with(mainPage) {
+        input("2")
+        assertInputField(expected = "2")
 
         repeat(5) {
-            mainPage.clickOperationPlusButton()
-            mainPage.assertInputField(expected = "2+")
+            plus()
+            assertInputField(expected = "2+")
         }
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "2+1")
+        input("1")
+        assertInputField(expected = "2+1")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "2+1")
-        mainPage.assertResult(expected = "3")
+        calculate()
+        assertInputField(expected = "2+1")
+        assertResult(expected = "3")
     }
 
-    //9. N -M N = result
     @Test
-    fun prevent_multiple_minus_operations() {
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "2")
+    fun prevent_multiple_minus_operations() = with(mainPage) {
+        input("2")
+        assertInputField(expected = "2")
 
         repeat(5) {
-            mainPage.clickOperationMinusButton()
-            mainPage.assertInputField(expected = "2-")
+            minus()
+            assertInputField(expected = "2-")
         }
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "2-1")
+        input("1")
+        assertInputField(expected = "2-1")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "2-1")
-        mainPage.assertResult(expected = "1")
+        calculate()
+        assertInputField(expected = "2-1")
+        assertResult(expected = "1")
     }
 
-    //10. + N + N = result
     @Test
-    fun prevent_leading_pluses() {
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField(expected = "")
+    fun prevent_leading_pluses() = with(mainPage) {
+        plus()
+        assertInputField(expected = "")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "1")
+        input("1")
+        assertInputField(expected = "1")
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField(expected = "1+")
+        plus()
+        assertInputField(expected = "1+")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "1+2")
+        input("2")
+        assertInputField(expected = "1+2")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "1+2")
-        mainPage.assertResult(expected = "3")
+        calculate()
+        assertInputField(expected = "1+2")
+        assertResult(expected = "3")
     }
 
-    //11. N + N + NM + N = result
     @Test
-    fun sum_of_more_than_two_numbers() {
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
+    fun sum_of_more_than_two_numbers() = with(mainPage) {
+        input("1")
+        assertInputField("1")
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("1+")
+        plus()
+        assertInputField("1+")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("1+2")
+        input("2")
+        assertInputField("1+2")
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("3+")
+        plus()
+        assertInputField("3+")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("3+1")
+        input("1")
+        assertInputField("3+1")
 
-        mainPage.clickNumberZero()
-        mainPage.assertInputField("3+10")
+        inputZero()
+        assertInputField("3+10")
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("13+")
+        plus()
+        assertInputField("13+")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("13+2")
+        input("2")
+        assertInputField("13+2")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("13+2")
-        mainPage.assertResult("15")
+        calculate()
+        assertInputField("13+2")
+        assertResult("15")
     }
 
-    //12. N - N - NM - N = result
     @Test
-    fun diff_of_more_than_two_numbers() {
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
+    fun multiply_more_than_two_numbers() = with(mainPage) {
+        input("2")
+        assertInputField("2")
 
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField("1-")
+        multiply()
+        assertInputField("2*")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("1-2")
+        input("3")
+        assertInputField("2*3")
 
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField("-1-")
+        multiply()
+        assertInputField("6*")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("-1-2")
+        input("2")
+        assertInputField("6*2")
 
-        mainPage.clickNumberZero()
-        mainPage.assertInputField("-1-20")
+        inputZero()
+        assertInputField("6*20")
 
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField("-21-")
+        multiply()
+        assertInputField("120*")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("-21-2")
+        input("2")
+        assertInputField("120*2")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("-21-2")
-        mainPage.assertResult("-23")
+        calculate()
+        assertInputField("120*2")
+        assertResult("240")
     }
 
-    //13. N + N = result + N = result + N + N = result
     @Test
-    fun sum_after_equals() {
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
+    fun divide_more_than_two_numbers() = with(mainPage) {
+        input("2")
+        assertInputField("2")
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("1+")
+        divide()
+        assertInputField("2/")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("1+2")
+        input("1")
+        inputZero()
+        assertInputField("2/10")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("1+2")
-        mainPage.assertResult("3")
+        divide()
+        assertInputField("0.2/")
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("3+")
-        mainPage.assertResult("")
+        input("2")
+        assertInputField("0.2/2")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("3+1")
-        mainPage.assertResult("")
+        inputZero()
+        assertInputField("0.2/20")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("3+1")
-        mainPage.assertResult("4")
+        divide()
+        assertInputField("0.01/")
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("4+")
-        mainPage.assertResult("")
+        input("2")
+        assertInputField("0.01/2")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("4+2")
-        mainPage.assertResult("")
-
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("6+")
-        mainPage.assertResult("")
-
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("6+1")
-        mainPage.assertResult("")
-
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("6+1")
-        mainPage.assertResult("7")
+        calculate()
+        assertInputField("0.01/2")
+        assertResult("0.005")
     }
 
-    //14. N - N = result - N = result - N - N = result
     @Test
-    fun diff_after_equals() {
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField("1-")
-
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("1-2")
-
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("1-2")
-        mainPage.assertResult("-1")
-
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField("-1-")
-        mainPage.assertResult("")
-
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("-1-1")
-        mainPage.assertResult("")
-
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("-1-1")
-        mainPage.assertResult("-2")
-
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField("-2-")
-        mainPage.assertResult("")
-
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("-2-2")
-        mainPage.assertResult("")
-
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField("-4-")
-        mainPage.assertResult("")
-
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("-4-1")
-        mainPage.assertResult("")
-
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("-4-1")
-        mainPage.assertResult("-5")
+    fun divide_gives_infinity_after_result() = with(mainPage) {
+        input("1")
+        divide()
+        inputZero()
+        assertInputField("1/0")
+        inputDot()
+        assertInputField("1/0.")
+        inputZero()
+        assertInputField("1/0.0")
+        divide()
+        assertInputField("1/0.0")
+        assertResult("infinity")
     }
 
-    //15. =M N =M + =M N =M result
     @Test
-    fun prevent_equals_not_at_the_end() {
+    fun divide_gives_uncertainty_after_result() = with(mainPage) {
+        inputZero()
+        assertInputField("0")
+        inputDot()
+        assertInputField("0.")
+        inputZero()
+        assertInputField("0.0")
+        divide()
+        inputZero()
+        assertInputField("0.0/0")
+        inputDot()
+        assertInputField("0.0/0.")
+        inputZero()
+        assertInputField("0.0/0.0")
+        divide()
+        assertInputField("0.0/0.0")
+        assertResult("uncertainty")
+    }
+
+    @Test
+    fun diff_of_more_than_two_numbers() = with(mainPage) {
+        input("1")
+        assertInputField("1")
+
+        minus()
+        assertInputField("1-")
+
+        input("2")
+        assertInputField("1-2")
+
+        minus()
+        assertInputField("-1-")
+
+        input("2")
+        assertInputField("-1-2")
+
+        inputZero()
+        assertInputField("-1-20")
+
+        minus()
+        assertInputField("-21-")
+
+        input("2")
+        assertInputField("-21-2")
+
+        calculate()
+        assertInputField("-21-2")
+        assertResult("-23")
+    }
+
+    @Test
+    fun sum_after_equals() = with(mainPage) {
+        input("1")
+        assertInputField("1")
+
+        plus()
+        assertInputField("1+")
+
+        input("2")
+        assertInputField("1+2")
+
+        calculate()
+        assertInputField("1+2")
+        assertResult("3")
+
+        plus()
+        assertInputField("3+")
+        assertResult("")
+
+        input("1")
+        assertInputField("3+1")
+        assertResult("")
+
+        calculate()
+        assertInputField("3+1")
+        assertResult("4")
+
+        plus()
+        assertInputField("4+")
+        assertResult("")
+
+        input("2")
+        assertInputField("4+2")
+        assertResult("")
+
+        plus()
+        assertInputField("6+")
+        assertResult("")
+
+        input("1")
+        assertInputField("6+1")
+        assertResult("")
+
+        calculate()
+        assertInputField("6+1")
+        assertResult("7")
+    }
+
+    @Test
+    fun diff_after_equals() = with(mainPage) {
+        input("1")
+        assertInputField("1")
+
+        minus()
+        assertInputField("1-")
+
+        input("2")
+        assertInputField("1-2")
+
+        calculate()
+        assertInputField("1-2")
+        assertResult("-1")
+
+        minus()
+        assertInputField("-1-")
+        assertResult("")
+
+        input("1")
+        assertInputField("-1-1")
+        assertResult("")
+
+        calculate()
+        assertInputField("-1-1")
+        assertResult("-2")
+
+        minus()
+        assertInputField("-2-")
+        assertResult("")
+
+        input("2")
+        assertInputField("-2-2")
+        assertResult("")
+
+        minus()
+        assertInputField("-4-")
+        assertResult("")
+
+        input("1")
+        assertInputField("-4-1")
+        assertResult("")
+
+        calculate()
+        assertInputField("-4-1")
+        assertResult("-5")
+    }
+
+    @Test
+    fun prevent_equals_not_at_the_end() = with(mainPage) {
         repeat(3) {
-            mainPage.clickEqualsButton()
-            mainPage.assertInputField(expected = "")
-            mainPage.assertResult("")
+            calculate()
+            assertInputField(expected = "")
+            assertResult("")
         }
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "2")
-        mainPage.assertResult("")
+        input("2")
+        assertInputField(expected = "2")
+        assertResult("")
 
         repeat(3) {
-            mainPage.clickEqualsButton()
-            mainPage.assertInputField(expected = "2")
-            mainPage.assertResult("")
+            calculate()
+            assertInputField(expected = "2")
+            assertResult("")
         }
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField(expected = "2+")
-        mainPage.assertResult("")
+        plus()
+        assertInputField(expected = "2+")
+        assertResult("")
 
         repeat(3) {
-            mainPage.clickEqualsButton()
-            mainPage.assertInputField(expected = "2+")
-            mainPage.assertResult("")
+            calculate()
+            assertInputField(expected = "2+")
+            assertResult("")
         }
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "2+1")
-        mainPage.assertResult("")
+        input("1")
+        assertInputField(expected = "2+1")
+        assertResult("")
 
         repeat(3) {
-            mainPage.clickEqualsButton()
-            mainPage.assertInputField(expected = "2+1")
-            mainPage.assertResult("3")
+            calculate()
+            assertInputField(expected = "2+1")
+            assertResult("3")
         }
     }
 
     @Test
     fun not_number_after_dot() = with(mainPage) {
-        clickNumberOneButton()
+        input("1")
         assertInputField("1")
-        clickDotButton()
+        inputDot()
         assertInputField("1.")
-        clickOperationPlusButton()
+        plus()
         assertInputField("1.")
-        clickEqualsButton()
+        calculate()
         assertInputField("1.")
         assertResult("")
 
-        clickNumberZero()
+        inputZero()
         assertInputField("1.0")
-        clickOperationDivideButton()
+        divide()
         assertInputField("1.0/")
-        clickNumberZero()
+        inputZero()
         assertInputField("1.0/0")
-        clickDotButton()
+        inputDot()
         assertInputField("1.0/0.")
-        clickEqualsButton()
+        calculate()
         assertInputField("1.0/0.")
-        clickOperationPlusButton()
+        plus()
         assertInputField("1.0/0.")
-        clickNumberOneButton()
+        input("1")
         assertInputField("1.0/0.1")
-        clickEqualsButton()
+        calculate()
         assertInputField("1.0/0.1")
         assertResult("10")
     }
 
-    //16. =M N =M - =M N =M result
     @Test
-    fun prevent_equals_after_minus() {
+    fun prevent_equals_after_minus() = with(mainPage) {
         repeat(3) {
-            mainPage.clickEqualsButton()
-            mainPage.assertInputField(expected = "")
-            mainPage.assertResult("")
+            calculate()
+            assertInputField(expected = "")
+            assertResult("")
         }
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "2")
-        mainPage.assertResult("")
+        input("2")
+        assertInputField(expected = "2")
+        assertResult("")
 
         repeat(3) {
-            mainPage.clickEqualsButton()
-            mainPage.assertInputField(expected = "2")
-            mainPage.assertResult("")
+            calculate()
+            assertInputField(expected = "2")
+            assertResult("")
         }
 
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField(expected = "2-")
-        mainPage.assertResult("")
+        minus()
+        assertInputField(expected = "2-")
+        assertResult("")
 
         repeat(3) {
-            mainPage.clickEqualsButton()
-            mainPage.assertInputField(expected = "2-")
-            mainPage.assertResult("")
+            calculate()
+            assertInputField(expected = "2-")
+            assertResult("")
         }
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "2-1")
-        mainPage.assertResult("")
+        input("1")
+        assertInputField(expected = "2-1")
+        assertResult("")
 
         repeat(3) {
-            mainPage.clickEqualsButton()
-            mainPage.assertInputField(expected = "2-1")
-            mainPage.assertResult("1")
+            calculate()
+            assertInputField(expected = "2-1")
+            assertResult("1")
         }
     }
 
-    //17. N - N = result
     @Test
-    fun diff_of_two_numbers() {
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField(expected = "1")
+    fun diff_of_two_numbers() = with(mainPage) {
+        input("1")
+        assertInputField(expected = "1")
 
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField(expected = "1-")
+        minus()
+        assertInputField(expected = "1-")
 
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField(expected = "1-2")
+        input("2")
+        assertInputField(expected = "1-2")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField(expected = "1-2")
-        mainPage.assertResult(expected = "-1")
-    }
-
-    //18. -M N - N = result
-    @Test
-    fun diff_sign_ahead() {
-        repeat(3) {
-            mainPage.clickOperationMinusButton()
-            mainPage.assertInputField("-")
-        }
-
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("-1")
-
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField("-1-")
-
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("-1-2")
-
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("-1-2")
-        mainPage.assertResult("-3")
-    }
-
-    //19. -+ N -+ N -+ N = result
-    @Test
-    fun change_minus_to_plus() {
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField("-")
-
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("")
-
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("2")
-
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField("2-")
-
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("2+")
-
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("2+1")
-
-        mainPage.clickOperationMinusButton()
-        mainPage.assertInputField("3-")
-        mainPage.assertResult("")
-
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("3+")
-        mainPage.assertResult("")
-
-        mainPage.clickNumberZero()
-        mainPage.assertInputField("3+0")
-        mainPage.assertResult("")
-
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("3+0")
-        mainPage.assertResult("3")
-    }
-
-    //20. *M 0M *M 0M =M result
-    @Test
-    fun multiply_zeros() {
-        repeat(3) {
-            mainPage.clickOperationMultiplyButton()
-            mainPage.assertInputField("")
-        }
-        repeat(3) {
-            mainPage.clickNumberZero()
-            mainPage.assertInputField("0")
-        }
-        repeat(3) {
-            mainPage.clickOperationMultiplyButton()
-            mainPage.assertInputField("0*")
-        }
-        repeat(3) {
-            mainPage.clickNumberZero()
-            mainPage.assertInputField("0*0")
-        }
-        repeat(3) {
-            mainPage.clickEqualsButton()
-            mainPage.assertInputField("0*0")
-            mainPage.assertResult("0")
-        }
-    }
-
-    //21. NM * N = * NM =
-    @Test
-    fun multiply_several_times() {
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("11")
-
-        mainPage.clickOperationMultiplyButton()
-        mainPage.assertInputField("11*")
-
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("11*2")
-
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("11*2")
-        mainPage.assertResult("22")
-
-        mainPage.clickOperationMultiplyButton()
-        mainPage.assertInputField("22*")
-        mainPage.assertResult("")
-
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("22*1")
-
-        mainPage.clickNumberZero()
-        mainPage.assertInputField("22*10")
-
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("22*10")
-        mainPage.assertResult("220")
-    }
-
-    //22. NM * N += NM =
-    @Test
-    fun multiply_several_times_changed_operation() {
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("11")
-
-        mainPage.clickOperationMultiplyButton()
-        mainPage.assertInputField("11*")
-
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("11*2")
-
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("22+")
-        mainPage.assertResult("")
-
-        mainPage.clickOperationMultiplyButton()
-        mainPage.assertInputField("22*")
-        mainPage.assertResult("")
-
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("22*1")
-
-        mainPage.clickNumberZero()
-        mainPage.assertInputField("22*10")
-
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("22*10")
-        mainPage.assertResult("220")
-    }
-
-    //23. divide a number by zero
-    @Test
-    fun divide_number_by_zero() {
-        repeat(3) {
-            mainPage.clickOperationDivideButton()
-            mainPage.assertInputField("")
-        }
-
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-
-        repeat(3) {
-            mainPage.clickOperationDivideButton()
-            mainPage.assertInputField("1/")
-        }
-
-        repeat(3) {
-            mainPage.clickNumberZero()
-            mainPage.assertInputField("1/0")
-        }
-
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("1/0")
-        mainPage.assertResult("infinity")
+        calculate()
+        assertInputField(expected = "1-2")
+        assertResult(expected = "-1")
     }
 
     @Test
-    fun divide_number_by_zero_decimal() {
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
+    fun diff_sign_ahead() = with(mainPage) {
+        repeat(3) {
+            minus()
+            assertInputField("-")
+        }
 
-        mainPage.clickOperationDivideButton()
-        mainPage.assertInputField("1/")
+        input("1")
+        assertInputField("-1")
 
-        mainPage.clickNumberZero()
-        mainPage.assertInputField("1/0")
+        minus()
+        assertInputField("-1-")
 
-        mainPage.clickDotButton()
-        mainPage.assertInputField("1/0.")
+        input("2")
+        assertInputField("-1-2")
 
-        mainPage.clickNumberZero()
-        mainPage.assertInputField("1/0.0")
-
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("1/0.0")
-        mainPage.assertResult("infinity")
+        calculate()
+        assertInputField("-1-2")
+        assertResult("-3")
     }
 
     @Test
-    fun divide_by_zero_and_then_operation() {
+    fun change_minus_to_plus() = with(mainPage) {
+        minus()
+        assertInputField("-")
+
+        plus()
+        assertInputField("")
+
+        input("2")
+        assertInputField("2")
+
+        minus()
+        assertInputField("2-")
+
+        plus()
+        assertInputField("2+")
+
+        input("1")
+        assertInputField("2+1")
+
+        minus()
+        assertInputField("3-")
+        assertResult("")
+
+        plus()
+        assertInputField("3+")
+        assertResult("")
+
+        inputZero()
+        assertInputField("3+0")
+        assertResult("")
+
+        calculate()
+        assertInputField("3+0")
+        assertResult("3")
+    }
+
+    @Test
+    fun multiply_zeros() = with(mainPage) {
+        repeat(3) {
+            multiply()
+            assertInputField("")
+        }
+        repeat(3) {
+            inputZero()
+            assertInputField("0")
+        }
+        repeat(3) {
+            multiply()
+            assertInputField("0*")
+        }
+        repeat(3) {
+            inputZero()
+            assertInputField("0*0")
+        }
+        repeat(3) {
+            calculate()
+            assertInputField("0*0")
+            assertResult("0")
+        }
+    }
+
+    @Test
+    fun multiply_several_times() = with(mainPage) {
+        input("1")
+        assertInputField("1")
+
+        input("1")
+        assertInputField("11")
+
+        multiply()
+        assertInputField("11*")
+
+        input("2")
+        assertInputField("11*2")
+
+        calculate()
+        assertInputField("11*2")
+        assertResult("22")
+
+        multiply()
+        assertInputField("22*")
+        assertResult("")
+
+        input("1")
+        assertInputField("22*1")
+
+        inputZero()
+        assertInputField("22*10")
+
+        calculate()
+        assertInputField("22*10")
+        assertResult("220")
+    }
+
+    @Test
+    fun multiply_several_times_changed_operation() = with(mainPage) {
+        input("1")
+        assertInputField("1")
+
+        input("1")
+        assertInputField("11")
+
+        multiply()
+        assertInputField("11*")
+
+        input("2")
+        assertInputField("11*2")
+
+        plus()
+        assertInputField("22+")
+        assertResult("")
+
+        multiply()
+        assertInputField("22*")
+        assertResult("")
+
+        input("1")
+        assertInputField("22*1")
+
+        inputZero()
+        assertInputField("22*10")
+
+        calculate()
+        assertInputField("22*10")
+        assertResult("220")
+    }
+
+    @Test
+    fun divide_number_by_zero() = with(mainPage) {
+        repeat(3) {
+            divide()
+            assertInputField("")
+        }
+
+        input("1")
+        assertInputField("1")
+
+        repeat(3) {
+            divide()
+            assertInputField("1/")
+        }
+
+        repeat(3) {
+            inputZero()
+            assertInputField("1/0")
+        }
+
+        calculate()
+        assertInputField("1/0")
+        assertResult("infinity")
+    }
+
+    @Test
+    fun divide_number_by_zero_decimal() = with(mainPage) {
+        input("1")
+        assertInputField("1")
+
+        divide()
+        assertInputField("1/")
+
+        inputZero()
+        assertInputField("1/0")
+
+        inputDot()
+        assertInputField("1/0.")
+
+        inputZero()
+        assertInputField("1/0.0")
+
+        calculate()
+        assertInputField("1/0.0")
+        assertResult("infinity")
+    }
+
+    @Test
+    fun divide_by_zero_and_then_operation() = with(mainPage) {
         divide_number_by_zero()
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("")
-        mainPage.assertResult("")
+        plus()
+        assertInputField("")
+        assertResult("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.assertResult("")
+        input("1")
+        assertInputField("1")
+        assertResult("")
     }
 
     @Test
-    fun divide_by_zero_and_then_number() {
+    fun divide_by_zero_and_then_number() = with(mainPage) {
         divide_number_by_zero()
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.assertResult("")
-    }
-
-    //102/12 = 8.5
-    @Test
-    fun divide_decimal() {
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickNumberZero()
-        mainPage.assertInputField("10")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("102")
-
-        mainPage.clickOperationDivideButton()
-        mainPage.assertInputField("102/")
-
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("102/1")
-
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("102/12")
-
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("102/12")
-        mainPage.assertResult("8.5")
+        input("1")
+        assertInputField("1")
+        assertResult("")
     }
 
     @Test
-    fun sum_of_decimals() {
+    fun divide_decimal() = with(mainPage) {
+        input("1")
+        assertInputField("1")
+        inputZero()
+        assertInputField("10")
+        input("2")
+        assertInputField("102")
+
+        divide()
+        assertInputField("102/")
+
+        input("1")
+        assertInputField("102/1")
+
+        input("2")
+        assertInputField("102/12")
+
+        calculate()
+        assertInputField("102/12")
+        assertResult("8.5")
+    }
+
+    @Test
+    fun sum_of_decimals() = with(mainPage) {
         divide_decimal()
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("8.5+")
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("8.5+1")
+        plus()
+        assertInputField("8.5+")
+        input("1")
+        assertInputField("8.5+1")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("8.5+1")
-        mainPage.assertResult("9.5")
+        calculate()
+        assertInputField("8.5+1")
+        assertResult("9.5")
     }
 
     @Test
-    fun uncertainty() {
-        mainPage.clickNumberZero()
-        mainPage.assertInputField("0")
+    fun uncertainty() = with(mainPage) {
+        inputZero()
+        assertInputField("0")
 
-        mainPage.clickOperationDivideButton()
-        mainPage.assertInputField("0/")
+        divide()
+        assertInputField("0/")
 
-        mainPage.clickNumberZero()
-        mainPage.assertInputField("0/0")
+        inputZero()
+        assertInputField("0/0")
 
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("0/0")
-        mainPage.assertResult("uncertainty")
+        calculate()
+        assertInputField("0/0")
+        assertResult("uncertainty")
     }
 
     @Test
-    fun uncertainty_and_then_operation() {
+    fun uncertainty_and_then_operation() = with(mainPage) {
         uncertainty()
 
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("")
-        mainPage.assertResult("")
+        plus()
+        assertInputField("")
+        assertResult("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.assertResult("")
+        input("1")
+        assertInputField("1")
+        assertResult("")
     }
 
     @Test
-    fun uncertainty_and_then_number() {
+    fun uncertainty_and_then_number() = with(mainPage) {
         uncertainty()
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.assertResult("")
+        input("1")
+        assertInputField("1")
+        assertResult("")
     }
 
     @Test
-    fun clear_all() {
-        mainPage.clickClearAll()
-        mainPage.assertInputField("")
-        mainPage.assertResult("")
+    fun clear_all() = with(mainPage) {
+        clearAll()
+        assertInputField("")
+        assertResult("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
+        input("1")
+        assertInputField("1")
 
-        mainPage.clickClearAll()
-        mainPage.assertInputField("")
+        clearAll()
+        assertInputField("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("1+")
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
 
-        mainPage.clickClearAll()
-        mainPage.assertInputField("")
+        clearAll()
+        assertInputField("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("1+")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("1+2")
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
+        input("2")
+        assertInputField("1+2")
 
-        mainPage.clickClearAll()
-        mainPage.assertInputField("")
+        clearAll()
+        assertInputField("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("1+")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("1+2")
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("1+2")
-        mainPage.assertResult("3")
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
+        input("2")
+        assertInputField("1+2")
+        calculate()
+        assertInputField("1+2")
+        assertResult("3")
 
-        mainPage.clickClearAll()
-        mainPage.assertInputField("")
-        mainPage.assertResult("")
+        clearAll()
+        assertInputField("")
+        assertResult("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("1+")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("1+2")
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("1+2")
-        mainPage.assertResult("3")
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
+        input("2")
+        assertInputField("1+2")
+        calculate()
+        assertInputField("1+2")
+        assertResult("3")
     }
 
     @Test
-    fun backspace() {
-        mainPage.clickBackspace()
-        mainPage.assertInputField("")
-        mainPage.assertResult("")
+    fun backspace() = with(mainPage) {
+        this.backspace()
+        assertInputField("")
+        assertResult("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
+        input("1")
+        assertInputField("1")
 
-        mainPage.clickBackspace()
-        mainPage.assertInputField("")
+        this.backspace()
+        assertInputField("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("1+")
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
 
-        mainPage.clickBackspace()
-        mainPage.assertInputField("1")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("")
+        this.backspace()
+        assertInputField("1")
+        this.backspace()
+        assertInputField("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("1+")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("1+2")
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
+        input("2")
+        assertInputField("1+2")
 
-        mainPage.clickBackspace()
-        mainPage.assertInputField("1+")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("1")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("")
+        this.backspace()
+        assertInputField("1+")
+        this.backspace()
+        assertInputField("1")
+        this.backspace()
+        assertInputField("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("1+")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("1+2")
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("1+2")
-        mainPage.assertResult("3")
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
+        input("2")
+        assertInputField("1+2")
+        calculate()
+        assertInputField("1+2")
+        assertResult("3")
 
-        mainPage.clickBackspace()
-        mainPage.assertInputField("")
-        mainPage.assertResult("")
+        this.backspace()
+        assertInputField("")
+        assertResult("")
     }
 
     @Test
-    fun backspace_complex() {
-        mainPage.clickBackspace()
-        mainPage.assertInputField("")
-        mainPage.assertResult("")
+    fun backspace_complex() = with(mainPage) {
+        this.backspace()
+        assertInputField("")
+        assertResult("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
+        input("1")
+        assertInputField("1")
 
-        mainPage.clickBackspace()
-        mainPage.assertInputField("")
+        this.backspace()
+        assertInputField("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("12")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("1")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("")
+        input("1")
+        assertInputField("1")
+        input("2")
+        assertInputField("12")
+        this.backspace()
+        assertInputField("1")
+        this.backspace()
+        assertInputField("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("12")
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("12+")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("12")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("1")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("")
+        input("1")
+        assertInputField("1")
+        input("2")
+        assertInputField("12")
+        plus()
+        assertInputField("12+")
+        this.backspace()
+        assertInputField("12")
+        this.backspace()
+        assertInputField("1")
+        this.backspace()
+        assertInputField("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("12")
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("12+")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("12+2")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("12+")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("12")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("1")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("")
+        input("1")
+        assertInputField("1")
+        input("2")
+        assertInputField("12")
+        plus()
+        assertInputField("12+")
+        input("2")
+        assertInputField("12+2")
+        this.backspace()
+        assertInputField("12+")
+        this.backspace()
+        assertInputField("12")
+        this.backspace()
+        assertInputField("1")
+        this.backspace()
+        assertInputField("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("12")
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("12+")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("12+2")
-        mainPage.clickNumberZero()
-        mainPage.assertInputField("12+20")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("12+2")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("12+")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("12")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("1")
-        mainPage.clickBackspace()
-        mainPage.assertInputField("")
+        input("1")
+        assertInputField("1")
+        input("2")
+        assertInputField("12")
+        plus()
+        assertInputField("12+")
+        input("2")
+        assertInputField("12+2")
+        inputZero()
+        assertInputField("12+20")
+        this.backspace()
+        assertInputField("12+2")
+        this.backspace()
+        assertInputField("12+")
+        this.backspace()
+        assertInputField("12")
+        this.backspace()
+        assertInputField("1")
+        this.backspace()
+        assertInputField("")
 
-        mainPage.clickNumberOneButton()
-        mainPage.assertInputField("1")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("12")
-        mainPage.clickOperationPlusButton()
-        mainPage.assertInputField("12+")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("12+2")
-        mainPage.clickNumberZero()
-        mainPage.assertInputField("12+20")
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("12+20")
-        mainPage.assertResult("32")
+        input("1")
+        assertInputField("1")
+        input("2")
+        assertInputField("12")
+        plus()
+        assertInputField("12+")
+        input("2")
+        assertInputField("12+2")
+        inputZero()
+        assertInputField("12+20")
+        calculate()
+        assertInputField("12+20")
+        assertResult("32")
 
-        mainPage.clickBackspace()
-        mainPage.assertInputField("3")
-        mainPage.assertResult("")
+        this.backspace()
+        assertInputField("3")
+        assertResult("")
 
-        mainPage.clickOperationMultiplyButton()
-        mainPage.assertInputField("3*")
-        mainPage.clickNumberTwoButton()
-        mainPage.assertInputField("3*2")
-        mainPage.clickEqualsButton()
-        mainPage.assertInputField("3*2")
-        mainPage.assertResult("6")
+        multiply()
+        assertInputField("3*")
+        input("2")
+        assertInputField("3*2")
+        calculate()
+        assertInputField("3*2")
+        assertResult("6")
     }
 
-    //12.01 + 20.12 =
     @Test
     fun dot() = with(mainPage) {
         repeat(3) {
-            clickDotButton()
+            inputDot()
             assertInputField("")
         }
-        clickNumberOneButton()
+        input("1")
         assertInputField("1")
-        clickNumberTwoButton()
+        input("2")
         assertInputField("12")
         repeat(3) {
-            clickDotButton()
+            inputDot()
             assertInputField("12.")
         }
-        clickNumberZero()
+        inputZero()
         assertInputField("12.0")
         repeat(3) {
-            clickDotButton()
+            inputDot()
             assertInputField("12.0")
         }
-        clickNumberOneButton()
+        input("1")
         assertInputField("12.01")
 
-        clickOperationPlusButton()
+        plus()
         assertInputField("12.01+")
 
         repeat(3) {
-            clickDotButton()
+            inputDot()
             assertInputField("12.01+")
         }
-        clickNumberTwoButton()
+        input("2")
         assertInputField("12.01+2")
-        clickNumberZero()
+        inputZero()
         assertInputField("12.01+20")
 
         repeat(3) {
-            clickDotButton()
+            inputDot()
             assertInputField("12.01+20.")
         }
 
-        clickNumberOneButton()
+        input("1")
         assertInputField("12.01+20.1")
 
         repeat(3) {
-            clickDotButton()
+            inputDot()
             assertInputField("12.01+20.1")
         }
-        clickNumberTwoButton()
+        input("2")
         assertInputField("12.01+20.12")
 
-        clickEqualsButton()
+        calculate()
         assertInputField("12.01+20.12")
         assertResult("32.13")
 
         repeat(3) {
-            clickDotButton()
+            inputDot()
             assertInputField("12.01+20.12")
             assertResult("32.13")
         }
 
-        clickClearAll()
+        clearAll()
         assertInputField("")
         assertResult("")
 
-        clickNumberOneButton()
+        input("1")
         assertInputField("1")
 
-        clickOperationPlusButton()
+        plus()
         assertInputField("1+")
 
-        clickNumberTwoButton()
+        input("2")
         assertInputField("1+2")
 
-        clickEqualsButton()
+        calculate()
         assertInputField("1+2")
         assertResult("3")
 
-        clickDotButton()
+        inputDot()
         assertInputField("3.")
         assertResult("")
 
-        clickBackspace()
+        this.backspace()
         assertInputField("3")
 
-        clickOperationMultiplyButton()
+        multiply()
         assertInputField("3*")
-        clickNumberTwoButton()
+        input("2")
         assertInputField("3*2")
 
-        clickDotButton()
+        inputDot()
         assertInputField("3*2.")
 
-        clickNumberOneButton()
+        input("1")
         assertInputField("3*2.1")
 
-        clickEqualsButton()
+        calculate()
         assertInputField("3*2.1")
         assertResult("6.3")
+    }
+
+    @Test
+    fun final() = with(mainPage) {
+        input("1")
+        assertInputField("1")
+        inputDot()
+        assertInputField("1.")
+        minus()
+        assertInputField("1.")
+
+        multiply()
+        assertInputField("1.")
+
+        divide()
+        assertInputField("1.")
+
+        backspace()
+        assertInputField("1")
+
+        plus()
+        assertInputField("1+")
+
+        repeat(2) {
+            minus()
+            assertInputField("1-")
+        }
+
+        repeat(2) {
+            divide()
+            assertInputField("1/")
+        }
+
+        input("2")
+        assertInputField("1/2")
+
+        inputDot()
+        assertInputField("1/2.")
+
+        minus()
+        assertInputField("1/2.")
+
+        multiply()
+        assertInputField("1/2.")
+
+        divide()
+        assertInputField("1/2.")
+    }
+
+    @Test
+    fun complex_division() = with(mainPage) {
+        input("1")
+        assertInputField("1")
+        input("4")
+        assertInputField("14")
+        input("4")
+        assertInputField("144")
+        divide()
+        assertInputField("144/")
+        input("7")
+        assertInputField("144/7")
+        calculate()
+        assertInputField("144/7")
+        assertResult("20.5714285714")
+
+        clearAll()
+        input("2")
+        assertInputField("2")
+        divide()
+        assertInputField("2/")
+        input("3")
+        assertInputField("2/3")
+        calculate()
+        assertInputField("2/3")
+        assertResult("0.6666666667")
     }
 }

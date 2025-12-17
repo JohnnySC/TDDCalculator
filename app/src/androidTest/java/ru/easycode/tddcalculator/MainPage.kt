@@ -8,26 +8,12 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.performClick
 
-class MainPage(composeTestRule: ComposeContentTestRule) {
+class MainPage(private val composeTestRule: ComposeContentTestRule) {
 
     private val numberZeroButton =
         composeTestRule.onNode(
             hasTestTag("number zero button") and
                     hasText("0") and
-                    hasClickAction()
-        )
-
-    private val numberOneButton =
-        composeTestRule.onNode(
-            hasTestTag("number one button") and
-                    hasText("1") and
-                    hasClickAction()
-        )
-
-    private val numberTwoButton =
-        composeTestRule.onNode(
-            hasTestTag("number two button") and
-                    hasText("2") and
                     hasClickAction()
         )
 
@@ -97,35 +83,35 @@ class MainPage(composeTestRule: ComposeContentTestRule) {
                 hasNoClickAction()
     )
 
-    fun clickNumberOneButton() {
-        numberOneButton.performClick()
-    }
-
     fun assertInputField(expected: String) {
         inputText.assertTextEquals(expected)
     }
 
-    fun clickOperationPlusButton() {
+    fun plus() {
         plusButton.performClick()
     }
 
-    fun clickOperationMinusButton() {
+    fun minus() {
         minusButton.performClick()
     }
 
-    fun clickOperationMultiplyButton() {
+    fun multiply() {
         multiplyButton.performClick()
     }
 
-    fun clickOperationDivideButton() {
+    fun divide() {
         divideButton.performClick()
     }
 
-    fun clickNumberTwoButton() {
-        numberTwoButton.performClick()
+    fun input(number: String) {
+        composeTestRule.onNode(
+            hasTestTag("number $number button") and
+                    hasText(number) and
+                    hasClickAction()
+        ).performClick()
     }
 
-    fun clickEqualsButton() {
+    fun calculate() {
         equalsButton.performClick()
     }
 
@@ -133,19 +119,19 @@ class MainPage(composeTestRule: ComposeContentTestRule) {
         resultText.assertTextEquals(expected)
     }
 
-    fun clickNumberZero() {
+    fun inputZero() {
         numberZeroButton.performClick()
     }
 
-    fun clickClearAll() {
+    fun clearAll() {
         clearAllButton.performClick()
     }
 
-    fun clickBackspace() {
+    fun backspace() {
         backspaceButton.performClick()
     }
 
-    fun clickDotButton() {
+    fun inputDot() {
         dotButton.performClick()
     }
 }

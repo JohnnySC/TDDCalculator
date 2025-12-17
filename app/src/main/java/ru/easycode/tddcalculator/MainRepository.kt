@@ -1,7 +1,7 @@
 package ru.easycode.tddcalculator
 
 import java.math.BigDecimal
-import java.math.BigInteger
+import java.math.RoundingMode
 
 interface MainRepository {
 
@@ -28,8 +28,8 @@ interface MainRepository {
         }
 
         override fun divide(left: String, right: String): String {
-            val result = BigDecimal(left).divide(BigDecimal(right))
-            return result.toString()
+            val result = BigDecimal(left).divide(BigDecimal(right), 10, RoundingMode.HALF_UP).stripTrailingZeros()
+            return result.toPlainString()
         }
     }
 }
