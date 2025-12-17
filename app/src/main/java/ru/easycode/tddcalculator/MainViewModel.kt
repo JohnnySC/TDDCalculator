@@ -34,12 +34,8 @@ class MainViewModel(
         resultMutableFlow.value = result
     }
 
-    override fun inputOne() {
-        state.inputNumber("1", calculationParts, this)
-    }
-
-    override fun inputTwo() {
-        state.inputNumber("2", calculationParts, this)
+    override fun input(number: String) {
+        state.inputNumber(number, calculationParts, this)
     }
 
     override fun inputZero() {

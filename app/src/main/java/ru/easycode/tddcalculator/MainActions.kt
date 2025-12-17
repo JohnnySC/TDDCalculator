@@ -2,8 +2,7 @@ package ru.easycode.tddcalculator
 
 interface MainActions {
 
-    fun inputOne()
-    fun inputTwo()
+    fun input(number: String)
     fun inputZero()
     fun inputDot()
 

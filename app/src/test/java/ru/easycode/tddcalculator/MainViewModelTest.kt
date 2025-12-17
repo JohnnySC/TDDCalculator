@@ -7,14 +7,14 @@ import org.junit.Test
 
 class MainViewModelTest {
 
-    private lateinit var repository: FakeMainRepository
+    private lateinit var repository: MainRepository
     private lateinit var viewModel: MainViewModel
     private lateinit var inputFlow: StateFlow<String>
     private lateinit var resultFlow: StateFlow<String>
 
     @Before
     fun setup() {
-        repository = FakeMainRepository()
+        repository = MainRepository.Base()
         viewModel = MainViewModel(repository = repository)
         inputFlow = viewModel.inputFlow
         resultFlow = viewModel.resultFlow
@@ -23,678 +23,1268 @@ class MainViewModelTest {
     }
 
     @Test
-    fun sum_of_two_numbers() {
-        viewModel.inputTwo()
-        assertEquals("2", inputFlow.value)
+    fun sum_of_two_numbers() = with(viewModel) {
+        input("2")
+        assertInputField(expected = "2")
 
-        viewModel.plus()
-        assertEquals("2+", inputFlow.value)
+        plus()
+        assertInputField(expected = "2+")
 
-        viewModel.inputOne()
-        assertEquals("2+1", inputFlow.value)
+        input("1")
+        assertInputField(expected = "2+1")
 
-        viewModel.calculate()
-        assertEquals("2+1", inputFlow.value)
-        assertEquals("3", resultFlow.value)
+        calculate()
+        assertInputField(expected = "2+1")
+        assertResult(expected = "3")
     }
 
     @Test
-    fun sum_of_two_numbers_more_complex() {
-        viewModel.inputTwo()
-        assertEquals("2", inputFlow.value)
+    fun sum_of_two_numbers_more_complex() = with(viewModel) {
+        input("2")
+        assertInputField(expected = "2")
 
-        viewModel.inputOne()
-        assertEquals("21", inputFlow.value)
+        input("1")
+        assertInputField(expected = "21")
 
-        viewModel.inputZero()
-        assertEquals("210", inputFlow.value)
+        inputZero()
+        assertInputField(expected = "210")
 
-        viewModel.inputZero()
-        assertEquals("2100", inputFlow.value)
+        inputZero()
+        assertInputField(expected = "2100")
 
-        viewModel.plus()
-        assertEquals("2100+", inputFlow.value)
+        plus()
+        assertInputField(expected = "2100+")
 
-        viewModel.inputOne()
-        assertEquals("2100+1", inputFlow.value)
+        input("1")
+        assertInputField(expected = "2100+1")
 
-        viewModel.inputZero()
-        assertEquals("2100+10", inputFlow.value)
+        inputZero()
+        assertInputField(expected = "2100+10")
 
-        viewModel.inputTwo()
-        assertEquals("2100+102", inputFlow.value)
+        input("2")
+        assertInputField(expected = "2100+102")
 
-        viewModel.calculate()
-        assertEquals("2100+102", inputFlow.value)
-        assertEquals("2202", resultFlow.value)
+        calculate()
+        assertInputField(expected = "2100+102")
+        assertResult(expected = "2202")
     }
 
     @Test
-    fun sum_of_two_numbers_corner_case() {
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
+    fun sum_of_two_numbers_corner_case() = with(viewModel) {
+        input("1")
+        assertInputField(expected = "1")
 
         var expected = "1"
         repeat(9) {
-            viewModel.inputZero()
+            inputZero()
             expected += "0"
-            assertEquals(expected, inputFlow.value)
+            assertInputField(expected = expected)
         }
 
-        viewModel.plus()
-        assertEquals("1000000000+", inputFlow.value)
+        plus()
+        assertInputField(expected = "1000000000+")
 
-        viewModel.inputTwo()
-        assertEquals("1000000000+2", inputFlow.value)
+        input("2")
+        assertInputField(expected = "1000000000+2")
 
         expected = "1000000000+2"
         repeat(9) {
-            viewModel.inputZero()
+            inputZero()
             expected += "0"
-            assertEquals(expected, inputFlow.value)
+            assertInputField(expected = expected)
         }
 
-        viewModel.calculate()
-        assertEquals("1000000000+2000000000", inputFlow.value)
-        assertEquals("3000000000", resultFlow.value)
+        calculate()
+        assertInputField(expected = "1000000000+2000000000")
+        assertResult(expected = "3000000000")
     }
 
     @Test
-    fun prevent_multiple_zeros() {
+    fun prevent_multiple_zeros() = with(viewModel) {
         repeat(10) {
-            viewModel.inputZero()
-            assertEquals("0", inputFlow.value)
+            inputZero()
+            assertInputField(expected = "0")
         }
-        viewModel.plus()
-        assertEquals("0+", inputFlow.value)
+        plus()
+        assertInputField(expected = "0+")
         repeat(10) {
-            viewModel.inputZero()
-            assertEquals("0+0", inputFlow.value)
+            inputZero()
+            assertInputField(expected = "0+0")
         }
-        viewModel.calculate()
-        assertEquals("0+0", inputFlow.value)
-        assertEquals("0", resultFlow.value)
+        calculate()
+        assertInputField(expected = "0+0")
+        assertResult(expected = "0")
     }
 
     @Test
-    fun prevent_multiple_zeros_minus() {
+    fun prevent_multiple_zeros_minus_operation() = with(viewModel) {
         repeat(10) {
-            viewModel.inputZero()
-            assertEquals("0", inputFlow.value)
+            inputZero()
+            assertInputField(expected = "0")
         }
-        viewModel.minus()
-        assertEquals("0-", inputFlow.value)
+        minus()
+        assertInputField(expected = "0-")
         repeat(10) {
-            viewModel.inputZero()
-            assertEquals("0-0", inputFlow.value)
+            inputZero()
+            assertInputField(expected = "0-0")
         }
-        viewModel.calculate()
-        assertEquals("0-0", inputFlow.value)
-        assertEquals("0", resultFlow.value)
+        calculate()
+        assertInputField(expected = "0-0")
+        assertResult(expected = "0")
     }
 
     @Test
-    fun prevent_leading_zeros() {
-        viewModel.inputZero()
-        assertEquals("0", inputFlow.value)
+    fun prevent_leading_zeros() = with(viewModel) {
+        inputZero()
+        assertInputField(expected = "0")
 
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
+        input("1")
+        assertInputField(expected = "1")
 
-        viewModel.plus()
-        assertEquals("1+", inputFlow.value)
+        plus()
+        assertInputField(expected = "1+")
 
-        viewModel.inputZero()
-        assertEquals("1+0", inputFlow.value)
+        inputZero()
+        assertInputField(expected = "1+0")
 
-        viewModel.inputTwo()
-        assertEquals("1+2", inputFlow.value)
+        input("2")
+        assertInputField(expected = "1+2")
 
-        viewModel.calculate()
-        assertEquals("1+2", inputFlow.value)
-        assertEquals("3", resultFlow.value)
+        calculate()
+        assertInputField(expected = "1+2")
+        assertResult(expected = "3")
     }
 
     @Test
-    fun prevent_minus_zero() {
-        viewModel.minus()
-        assertEquals("-", inputFlow.value)
+    fun prevent_minus_zero() = with(viewModel) {
+        minus()
+        assertInputField(expected = "-")
 
-        viewModel.inputZero()
-        assertEquals("-", inputFlow.value)
+        inputZero()
+        assertInputField(expected = "-")
 
-        viewModel.inputOne()
-        assertEquals("-1", inputFlow.value)
+        input("1")
+        assertInputField(expected = "-1")
 
-        viewModel.plus()
-        assertEquals("-1+", inputFlow.value)
+        plus()
+        assertInputField(expected = "-1+")
 
-        viewModel.inputTwo()
-        assertEquals("-1+2", inputFlow.value)
+        input("2")
+        assertInputField(expected = "-1+2")
 
-        viewModel.inputZero()
-        assertEquals("-1+20", inputFlow.value)
+        inputZero()
+        assertInputField(expected = "-1+20")
 
-        viewModel.calculate()
-        assertEquals("-1+20", inputFlow.value)
-        assertEquals("19", resultFlow.value)
+        calculate()
+        assertInputField(expected = "-1+20")
+        assertResult("19")
     }
 
     @Test
-    fun prevent_multiple_plus_operations() {
-        viewModel.inputTwo()
-        assertEquals("2", inputFlow.value)
+    fun prevent_minus_dot() = with(viewModel) {
+        minus()
+        assertInputField("-")
+        inputDot()
+        assertInputField("-")
+        input("1")
+        assertInputField("-1")
+        multiply()
+        assertInputField("-1*")
+        input("2")
+        assertInputField("-1*2")
+        calculate()
+        assertInputField("-1*2")
+        assertResult("-2")
+    }
+
+    @Test
+    fun prevent_multiple_plus_operations() = with(viewModel) {
+        input("2")
+        assertInputField(expected = "2")
 
         repeat(5) {
-            viewModel.plus()
-            assertEquals("2+", inputFlow.value)
+            plus()
+            assertInputField(expected = "2+")
         }
 
-        viewModel.inputOne()
-        assertEquals("2+1", inputFlow.value)
+        input("1")
+        assertInputField(expected = "2+1")
 
-        viewModel.calculate()
-        assertEquals("2+1", inputFlow.value)
-        assertEquals("3", resultFlow.value)
+        calculate()
+        assertInputField(expected = "2+1")
+        assertResult(expected = "3")
     }
 
     @Test
-    fun prevent_multiple_minus_operations() {
-        repeat(5) {
-            viewModel.minus()
-            assertEquals("-", inputFlow.value)
-        }
-        viewModel.inputTwo()
-        assertEquals("-2", inputFlow.value)
+    fun prevent_multiple_minus_operations() = with(viewModel) {
+        input("2")
+        assertInputField(expected = "2")
 
         repeat(5) {
-            viewModel.minus()
-            assertEquals("-2-", inputFlow.value)
+            minus()
+            assertInputField(expected = "2-")
         }
 
-        viewModel.inputOne()
-        assertEquals("-2-1", inputFlow.value)
+        input("1")
+        assertInputField(expected = "2-1")
 
-        viewModel.calculate()
-        assertEquals("-2-1", inputFlow.value)
-        assertEquals("-3", resultFlow.value)
+        calculate()
+        assertInputField(expected = "2-1")
+        assertResult(expected = "1")
     }
 
     @Test
-    fun prevent_leading_pluses() {
-        viewModel.plus()
-        assertEquals("", inputFlow.value)
+    fun prevent_leading_pluses() = with(viewModel) {
+        plus()
+        assertInputField(expected = "")
 
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
+        input("1")
+        assertInputField(expected = "1")
 
-        viewModel.plus()
-        assertEquals("1+", inputFlow.value)
+        plus()
+        assertInputField(expected = "1+")
 
-        viewModel.inputTwo()
-        assertEquals("1+2", inputFlow.value)
+        input("2")
+        assertInputField(expected = "1+2")
 
-        viewModel.calculate()
-        assertEquals("1+2", inputFlow.value)
-        assertEquals("3", resultFlow.value)
+        calculate()
+        assertInputField(expected = "1+2")
+        assertResult(expected = "3")
     }
 
     @Test
-    fun sum_of_more_than_two_numbers() {
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
-        assertEquals("", resultFlow.value)
+    fun sum_of_more_than_two_numbers() = with(viewModel) {
+        input("1")
+        assertInputField("1")
 
-        viewModel.plus()
-        assertEquals("1+", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        plus()
+        assertInputField("1+")
 
-        viewModel.inputTwo()
-        assertEquals("1+2", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        input("2")
+        assertInputField("1+2")
 
+        plus()
+        assertInputField("3+")
+
+        input("1")
+        assertInputField("3+1")
+
+        inputZero()
+        assertInputField("3+10")
+
+        plus()
+        assertInputField("13+")
+
+        input("2")
+        assertInputField("13+2")
+
+        calculate()
+        assertInputField("13+2")
+        assertResult("15")
+    }
+
+    @Test
+    fun multiply_more_than_two_numbers() = with(viewModel) {
+        input("2")
+        assertInputField("2")
+
+        multiply()
+        assertInputField("2*")
+
+        input("3")
+        assertInputField("2*3")
+
+        multiply()
+        assertInputField("6*")
+
+        input("2")
+        assertInputField("6*2")
+
+        inputZero()
+        assertInputField("6*20")
+
+        multiply()
+        assertInputField("120*")
+
+        input("2")
+        assertInputField("120*2")
+
+        calculate()
+        assertInputField("120*2")
+        assertResult("240")
+    }
+
+    @Test
+    fun divide_more_than_two_numbers() = with(viewModel) {
+        input("2")
+        assertInputField("2")
+
+        divide()
+        assertInputField("2/")
+
+        input("1")
+        inputZero()
+        assertInputField("2/10")
+
+        divide()
+        assertInputField("0.2/")
+
+        input("2")
+        assertInputField("0.2/2")
+
+        inputZero()
+        assertInputField("0.2/20")
+
+        divide()
+        assertInputField("0.01/")
+
+        input("2")
+        assertInputField("0.01/2")
+
+        calculate()
+        assertInputField("0.01/2")
+        assertResult("0.005")
+    }
+
+    @Test
+    fun divide_gives_infinity_after_result() = with(viewModel) {
+        input("1")
+        divide()
+        inputZero()
+        assertInputField("1/0")
+        inputDot()
+        assertInputField("1/0.")
+        inputZero()
+        assertInputField("1/0.0")
+        divide()
+        assertInputField("1/0.0")
+        assertResult("infinity")
+    }
+
+    @Test
+    fun divide_gives_uncertainty_after_result() = with(viewModel) {
+        inputZero()
+        assertInputField("0")
+        inputDot()
+        assertInputField("0.")
+        inputZero()
+        assertInputField("0.0")
+        divide()
+        inputZero()
+        assertInputField("0.0/0")
+        inputDot()
+        assertInputField("0.0/0.")
+        inputZero()
+        assertInputField("0.0/0.0")
+        divide()
+        assertInputField("0.0/0.0")
+        assertResult("uncertainty")
+    }
+
+    @Test
+    fun diff_of_more_than_two_numbers() = with(viewModel) {
+        input("1")
+        assertInputField("1")
+
+        minus()
+        assertInputField("1-")
+
+        input("2")
+        assertInputField("1-2")
+
+        minus()
+        assertInputField("-1-")
+
+        input("2")
+        assertInputField("-1-2")
+
+        inputZero()
+        assertInputField("-1-20")
+
+        minus()
+        assertInputField("-21-")
+
+        input("2")
+        assertInputField("-21-2")
+
+        calculate()
+        assertInputField("-21-2")
+        assertResult("-23")
+    }
+
+    @Test
+    fun sum_after_equals() = with(viewModel) {
+        input("1")
+        assertInputField("1")
+
+        plus()
+        assertInputField("1+")
+
+        input("2")
+        assertInputField("1+2")
+
+        calculate()
+        assertInputField("1+2")
+        assertResult("3")
+
+        plus()
+        assertInputField("3+")
+        assertResult("")
+
+        input("1")
+        assertInputField("3+1")
+        assertResult("")
+
+        calculate()
+        assertInputField("3+1")
+        assertResult("4")
+
+        plus()
+        assertInputField("4+")
+        assertResult("")
+
+        input("2")
+        assertInputField("4+2")
+        assertResult("")
+
+        plus()
+        assertInputField("6+")
+        assertResult("")
+
+        input("1")
+        assertInputField("6+1")
+        assertResult("")
+
+        calculate()
+        assertInputField("6+1")
+        assertResult("7")
+    }
+
+    @Test
+    fun diff_after_equals() = with(viewModel) {
+        input("1")
+        assertInputField("1")
+
+        minus()
+        assertInputField("1-")
+
+        input("2")
+        assertInputField("1-2")
+
+        calculate()
+        assertInputField("1-2")
+        assertResult("-1")
+
+        minus()
+        assertInputField("-1-")
+        assertResult("")
+
+        input("1")
+        assertInputField("-1-1")
+        assertResult("")
+
+        calculate()
+        assertInputField("-1-1")
+        assertResult("-2")
+
+        minus()
+        assertInputField("-2-")
+        assertResult("")
+
+        input("2")
+        assertInputField("-2-2")
+        assertResult("")
+
+        minus()
+        assertInputField("-4-")
+        assertResult("")
+
+        input("1")
+        assertInputField("-4-1")
+        assertResult("")
+
+        calculate()
+        assertInputField("-4-1")
+        assertResult("-5")
+    }
+
+    @Test
+    fun prevent_equals_not_at_the_end() = with(viewModel) {
         repeat(3) {
-            viewModel.plus()
-            repository.assertSumCalled(expectedTimes = 1)
-            assertEquals("3+", inputFlow.value)
-            assertEquals("", resultFlow.value)
+            calculate()
+            assertInputField(expected = "")
+            assertResult("")
         }
 
-        viewModel.inputOne()
-        assertEquals("3+1", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.inputZero()
-        assertEquals("3+10", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        input("2")
+        assertInputField(expected = "2")
+        assertResult("")
 
         repeat(3) {
-            viewModel.plus()
-            repository.assertSumCalled(expectedTimes = 2)
-            assertEquals("13+", inputFlow.value)
-            assertEquals("", resultFlow.value)
+            calculate()
+            assertInputField(expected = "2")
+            assertResult("")
         }
 
-        viewModel.inputTwo()
-        assertEquals("13+2", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        plus()
+        assertInputField(expected = "2+")
+        assertResult("")
 
         repeat(3) {
-            viewModel.calculate()
-            repository.assertSumCalled(expectedTimes = 3)
-            assertEquals("13+2", inputFlow.value)
-            assertEquals("15", resultFlow.value)
+            calculate()
+            assertInputField(expected = "2+")
+            assertResult("")
+        }
+
+        input("1")
+        assertInputField(expected = "2+1")
+        assertResult("")
+
+        repeat(3) {
+            calculate()
+            assertInputField(expected = "2+1")
+            assertResult("3")
         }
     }
 
     @Test
-    fun diff_of_more_than_two_numbers() {
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
-        assertEquals("", resultFlow.value)
+    fun not_number_after_dot() = with(viewModel) {
+        input("1")
+        assertInputField("1")
+        inputDot()
+        assertInputField("1.")
+        plus()
+        assertInputField("1.")
+        calculate()
+        assertInputField("1.")
+        assertResult("")
 
-        viewModel.minus()
-        assertEquals("1-", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        inputZero()
+        assertInputField("1.0")
+        divide()
+        assertInputField("1.0/")
+        inputZero()
+        assertInputField("1.0/0")
+        inputDot()
+        assertInputField("1.0/0.")
+        calculate()
+        assertInputField("1.0/0.")
+        plus()
+        assertInputField("1.0/0.")
+        input("1")
+        assertInputField("1.0/0.1")
+        calculate()
+        assertInputField("1.0/0.1")
+        assertResult("10")
+    }
 
-        viewModel.inputTwo()
-        assertEquals("1-2", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
+    @Test
+    fun prevent_equals_after_minus() = with(viewModel) {
         repeat(3) {
-            viewModel.minus()
-            repository.assertDiffCalled(expectedTimes = 1)
-            assertEquals("-1-", inputFlow.value)
-            assertEquals("", resultFlow.value)
+            calculate()
+            assertInputField(expected = "")
+            assertResult("")
         }
 
-        viewModel.inputTwo()
-        assertEquals("-1-2", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.inputZero()
-        assertEquals("-1-20", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        input("2")
+        assertInputField(expected = "2")
+        assertResult("")
 
         repeat(3) {
-            viewModel.minus()
-            repository.assertDiffCalled(expectedTimes = 2)
-            assertEquals("-21-", inputFlow.value)
-            assertEquals("", resultFlow.value)
+            calculate()
+            assertInputField(expected = "2")
+            assertResult("")
         }
 
-        viewModel.inputTwo()
-        assertEquals("-21-2", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        minus()
+        assertInputField(expected = "2-")
+        assertResult("")
 
         repeat(3) {
-            viewModel.calculate()
-            repository.assertDiffCalled(expectedTimes = 3)
-            assertEquals("-21-2", inputFlow.value)
-            assertEquals("-23", resultFlow.value)
+            calculate()
+            assertInputField(expected = "2-")
+            assertResult("")
+        }
+
+        input("1")
+        assertInputField(expected = "2-1")
+        assertResult("")
+
+        repeat(3) {
+            calculate()
+            assertInputField(expected = "2-1")
+            assertResult("1")
         }
     }
 
     @Test
-    fun sum_after_equals() {
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
+    fun diff_of_two_numbers() = with(viewModel) {
+        input("1")
+        assertInputField(expected = "1")
 
-        viewModel.plus()
-        assertEquals("1+", inputFlow.value)
+        minus()
+        assertInputField(expected = "1-")
 
-        viewModel.inputTwo()
-        assertEquals("1+2", inputFlow.value)
+        input("2")
+        assertInputField(expected = "1-2")
 
-        viewModel.calculate()
-        assertEquals("1+2", inputFlow.value)
-        assertEquals("3", resultFlow.value)
-
-        viewModel.plus()
-        assertEquals("3+", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.inputOne()
-        assertEquals("3+1", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.calculate()
-        assertEquals("3+1", inputFlow.value)
-        assertEquals("4", resultFlow.value)
-
-        viewModel.plus()
-        assertEquals("4+", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.inputTwo()
-        assertEquals("4+2", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.plus()
-        assertEquals("6+", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.inputOne()
-        assertEquals("6+1", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.calculate()
-        assertEquals("6+1", inputFlow.value)
-        assertEquals("7", resultFlow.value)
+        calculate()
+        assertInputField(expected = "1-2")
+        assertResult(expected = "-1")
     }
 
     @Test
-    fun diff_after_equals() {
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
+    fun diff_sign_ahead() = with(viewModel) {
+        repeat(3) {
+            minus()
+            assertInputField("-")
+        }
 
-        viewModel.minus()
-        assertEquals("1-", inputFlow.value)
+        input("1")
+        assertInputField("-1")
 
-        viewModel.inputTwo()
-        assertEquals("1-2", inputFlow.value)
+        minus()
+        assertInputField("-1-")
 
-        viewModel.calculate()
-        assertEquals("1-2", inputFlow.value)
-        assertEquals("-1", resultFlow.value)
+        input("2")
+        assertInputField("-1-2")
 
-        viewModel.minus()
-        assertEquals("-1-", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.inputOne()
-        assertEquals("-1-1", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.calculate()
-        assertEquals("-1-1", inputFlow.value)
-        assertEquals("-2", resultFlow.value)
-
-        viewModel.minus()
-        assertEquals("-2-", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.inputTwo()
-        assertEquals("-2-2", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.minus()
-        assertEquals("-4-", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.inputOne()
-        assertEquals("-4-1", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.calculate()
-        assertEquals("-4-1", inputFlow.value)
-        assertEquals("-5", resultFlow.value)
+        calculate()
+        assertInputField("-1-2")
+        assertResult("-3")
     }
 
     @Test
-    fun prevent_equals_not_at_the_end() {
-        repeat(3) {
-            viewModel.calculate()
-            assertEquals("", inputFlow.value)
-            assertEquals("", resultFlow.value)
-        }
+    fun change_minus_to_plus() = with(viewModel) {
+        minus()
+        assertInputField("-")
 
-        viewModel.inputTwo()
-        assertEquals("2", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        plus()
+        assertInputField("")
 
-        repeat(3) {
-            viewModel.calculate()
-            assertEquals("2", inputFlow.value)
-            assertEquals("", resultFlow.value)
-        }
+        input("2")
+        assertInputField("2")
 
-        viewModel.plus()
-        assertEquals("2+", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        minus()
+        assertInputField("2-")
 
-        repeat(3) {
-            viewModel.calculate()
-            assertEquals("2+", inputFlow.value)
-            assertEquals("", resultFlow.value)
-        }
+        plus()
+        assertInputField("2+")
 
-        viewModel.inputOne()
-        assertEquals("2+1", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        input("1")
+        assertInputField("2+1")
 
-        repeat(3) {
-            viewModel.calculate()
-            assertEquals("2+1", inputFlow.value)
-            assertEquals("3", resultFlow.value)
-        }
-        repository.assertSumCalled(expectedTimes = 1)
+        minus()
+        assertInputField("3-")
+        assertResult("")
+
+        plus()
+        assertInputField("3+")
+        assertResult("")
+
+        inputZero()
+        assertInputField("3+0")
+        assertResult("")
+
+        calculate()
+        assertInputField("3+0")
+        assertResult("3")
     }
 
     @Test
-    fun prevent_equals_after_minus() {
+    fun multiply_zeros() = with(viewModel) {
         repeat(3) {
-            viewModel.calculate()
-            assertEquals("", inputFlow.value)
-            assertEquals("", resultFlow.value)
+            multiply()
+            assertInputField("")
+        }
+        repeat(3) {
+            inputZero()
+            assertInputField("0")
+        }
+        repeat(3) {
+            multiply()
+            assertInputField("0*")
+        }
+        repeat(3) {
+            inputZero()
+            assertInputField("0*0")
+        }
+        repeat(3) {
+            calculate()
+            assertInputField("0*0")
+            assertResult("0")
+        }
+    }
+
+    @Test
+    fun multiply_several_times() = with(viewModel) {
+        input("1")
+        assertInputField("1")
+
+        input("1")
+        assertInputField("11")
+
+        multiply()
+        assertInputField("11*")
+
+        input("2")
+        assertInputField("11*2")
+
+        calculate()
+        assertInputField("11*2")
+        assertResult("22")
+
+        multiply()
+        assertInputField("22*")
+        assertResult("")
+
+        input("1")
+        assertInputField("22*1")
+
+        inputZero()
+        assertInputField("22*10")
+
+        calculate()
+        assertInputField("22*10")
+        assertResult("220")
+    }
+
+    @Test
+    fun multiply_several_times_changed_operation() = with(viewModel) {
+        input("1")
+        assertInputField("1")
+
+        input("1")
+        assertInputField("11")
+
+        multiply()
+        assertInputField("11*")
+
+        input("2")
+        assertInputField("11*2")
+
+        plus()
+        assertInputField("22+")
+        assertResult("")
+
+        multiply()
+        assertInputField("22*")
+        assertResult("")
+
+        input("1")
+        assertInputField("22*1")
+
+        inputZero()
+        assertInputField("22*10")
+
+        calculate()
+        assertInputField("22*10")
+        assertResult("220")
+    }
+
+    @Test
+    fun divide_number_by_zero() = with(viewModel) {
+        repeat(3) {
+            divide()
+            assertInputField("")
         }
 
-        viewModel.inputTwo()
-        assertEquals("2", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        input("1")
+        assertInputField("1")
 
         repeat(3) {
-            viewModel.calculate()
-            assertEquals("2", inputFlow.value)
-            assertEquals("", resultFlow.value)
+            divide()
+            assertInputField("1/")
         }
-
-        viewModel.minus()
-        assertEquals("2-", inputFlow.value)
-        assertEquals("", resultFlow.value)
 
         repeat(3) {
-            viewModel.calculate()
-            assertEquals("2-", inputFlow.value)
-            assertEquals("", resultFlow.value)
+            inputZero()
+            assertInputField("1/0")
         }
 
-        viewModel.inputOne()
-        assertEquals("2-1", inputFlow.value)
-        assertEquals("", resultFlow.value)
+        calculate()
+        assertInputField("1/0")
+        assertResult("infinity")
+    }
+
+    @Test
+    fun divide_number_by_zero_decimal() = with(viewModel) {
+        input("1")
+        assertInputField("1")
+
+        divide()
+        assertInputField("1/")
+
+        inputZero()
+        assertInputField("1/0")
+
+        inputDot()
+        assertInputField("1/0.")
+
+        inputZero()
+        assertInputField("1/0.0")
+
+        calculate()
+        assertInputField("1/0.0")
+        assertResult("infinity")
+    }
+
+    @Test
+    fun divide_by_zero_and_then_operation() = with(viewModel) {
+        divide_number_by_zero()
+
+        plus()
+        assertInputField("")
+        assertResult("")
+
+        input("1")
+        assertInputField("1")
+        assertResult("")
+    }
+
+    @Test
+    fun divide_by_zero_and_then_number() = with(viewModel) {
+        divide_number_by_zero()
+
+        input("1")
+        assertInputField("1")
+        assertResult("")
+    }
+
+    @Test
+    fun divide_decimal() = with(viewModel) {
+        input("1")
+        assertInputField("1")
+        inputZero()
+        assertInputField("10")
+        input("2")
+        assertInputField("102")
+
+        divide()
+        assertInputField("102/")
+
+        input("1")
+        assertInputField("102/1")
+
+        input("2")
+        assertInputField("102/12")
+
+        calculate()
+        assertInputField("102/12")
+        assertResult("8.5")
+    }
+
+    @Test
+    fun sum_of_decimals() = with(viewModel) {
+        divide_decimal()
+
+        plus()
+        assertInputField("8.5+")
+        input("1")
+        assertInputField("8.5+1")
+
+        calculate()
+        assertInputField("8.5+1")
+        assertResult("9.5")
+    }
+
+    @Test
+    fun uncertainty() = with(viewModel) {
+        inputZero()
+        assertInputField("0")
+
+        divide()
+        assertInputField("0/")
+
+        inputZero()
+        assertInputField("0/0")
+
+        calculate()
+        assertInputField("0/0")
+        assertResult("uncertainty")
+    }
+
+    @Test
+    fun uncertainty_and_then_operation() = with(viewModel) {
+        uncertainty()
+
+        plus()
+        assertInputField("")
+        assertResult("")
+
+        input("1")
+        assertInputField("1")
+        assertResult("")
+    }
+
+    @Test
+    fun uncertainty_and_then_number() = with(viewModel) {
+        uncertainty()
+
+        input("1")
+        assertInputField("1")
+        assertResult("")
+    }
+
+    @Test
+    fun clear_all() = with(viewModel) {
+        clearAll()
+        assertInputField("")
+        assertResult("")
+
+        input("1")
+        assertInputField("1")
+
+        clearAll()
+        assertInputField("")
+
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
+
+        clearAll()
+        assertInputField("")
+
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
+        input("2")
+        assertInputField("1+2")
+
+        clearAll()
+        assertInputField("")
+
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
+        input("2")
+        assertInputField("1+2")
+        calculate()
+        assertInputField("1+2")
+        assertResult("3")
+
+        clearAll()
+        assertInputField("")
+        assertResult("")
+
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
+        input("2")
+        assertInputField("1+2")
+        calculate()
+        assertInputField("1+2")
+        assertResult("3")
+    }
+
+    @Test
+    fun backspace() = with(viewModel) {
+        this.backspace()
+        assertInputField("")
+        assertResult("")
+
+        input("1")
+        assertInputField("1")
+
+        this.backspace()
+        assertInputField("")
+
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
+
+        this.backspace()
+        assertInputField("1")
+        this.backspace()
+        assertInputField("")
+
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
+        input("2")
+        assertInputField("1+2")
+
+        this.backspace()
+        assertInputField("1+")
+        this.backspace()
+        assertInputField("1")
+        this.backspace()
+        assertInputField("")
+
+        input("1")
+        assertInputField("1")
+        plus()
+        assertInputField("1+")
+        input("2")
+        assertInputField("1+2")
+        calculate()
+        assertInputField("1+2")
+        assertResult("3")
+
+        this.backspace()
+        assertInputField("")
+        assertResult("")
+    }
+
+    @Test
+    fun backspace_complex() = with(viewModel) {
+        this.backspace()
+        assertInputField("")
+        assertResult("")
+
+        input("1")
+        assertInputField("1")
+
+        this.backspace()
+        assertInputField("")
+
+        input("1")
+        assertInputField("1")
+        input("2")
+        assertInputField("12")
+        this.backspace()
+        assertInputField("1")
+        this.backspace()
+        assertInputField("")
+
+        input("1")
+        assertInputField("1")
+        input("2")
+        assertInputField("12")
+        plus()
+        assertInputField("12+")
+        this.backspace()
+        assertInputField("12")
+        this.backspace()
+        assertInputField("1")
+        this.backspace()
+        assertInputField("")
+
+        input("1")
+        assertInputField("1")
+        input("2")
+        assertInputField("12")
+        plus()
+        assertInputField("12+")
+        input("2")
+        assertInputField("12+2")
+        this.backspace()
+        assertInputField("12+")
+        this.backspace()
+        assertInputField("12")
+        this.backspace()
+        assertInputField("1")
+        this.backspace()
+        assertInputField("")
+
+        input("1")
+        assertInputField("1")
+        input("2")
+        assertInputField("12")
+        plus()
+        assertInputField("12+")
+        input("2")
+        assertInputField("12+2")
+        inputZero()
+        assertInputField("12+20")
+        this.backspace()
+        assertInputField("12+2")
+        this.backspace()
+        assertInputField("12+")
+        this.backspace()
+        assertInputField("12")
+        this.backspace()
+        assertInputField("1")
+        this.backspace()
+        assertInputField("")
+
+        input("1")
+        assertInputField("1")
+        input("2")
+        assertInputField("12")
+        plus()
+        assertInputField("12+")
+        input("2")
+        assertInputField("12+2")
+        inputZero()
+        assertInputField("12+20")
+        calculate()
+        assertInputField("12+20")
+        assertResult("32")
+
+        this.backspace()
+        assertInputField("3")
+        assertResult("")
+
+        multiply()
+        assertInputField("3*")
+        input("2")
+        assertInputField("3*2")
+        calculate()
+        assertInputField("3*2")
+        assertResult("6")
+    }
+
+    @Test
+    fun dot() = with(viewModel) {
+        repeat(3) {
+            inputDot()
+            assertInputField("")
+        }
+        input("1")
+        assertInputField("1")
+        input("2")
+        assertInputField("12")
+        repeat(3) {
+            inputDot()
+            assertInputField("12.")
+        }
+        inputZero()
+        assertInputField("12.0")
+        repeat(3) {
+            inputDot()
+            assertInputField("12.0")
+        }
+        input("1")
+        assertInputField("12.01")
+
+        plus()
+        assertInputField("12.01+")
 
         repeat(3) {
-            viewModel.calculate()
-            assertEquals("2-1", inputFlow.value)
-            assertEquals("1", resultFlow.value)
+            inputDot()
+            assertInputField("12.01+")
         }
-        repository.assertDiffCalled(expectedTimes = 1)
+        input("2")
+        assertInputField("12.01+2")
+        inputZero()
+        assertInputField("12.01+20")
+
+        repeat(3) {
+            inputDot()
+            assertInputField("12.01+20.")
+        }
+
+        input("1")
+        assertInputField("12.01+20.1")
+
+        repeat(3) {
+            inputDot()
+            assertInputField("12.01+20.1")
+        }
+        input("2")
+        assertInputField("12.01+20.12")
+
+        calculate()
+        assertInputField("12.01+20.12")
+        assertResult("32.13")
+
+        repeat(3) {
+            inputDot()
+            assertInputField("12.01+20.12")
+            assertResult("32.13")
+        }
+
+        clearAll()
+        assertInputField("")
+        assertResult("")
+
+        input("1")
+        assertInputField("1")
+
+        plus()
+        assertInputField("1+")
+
+        input("2")
+        assertInputField("1+2")
+
+        calculate()
+        assertInputField("1+2")
+        assertResult("3")
+
+        inputDot()
+        assertInputField("3.")
+        assertResult("")
+
+        this.backspace()
+        assertInputField("3")
+
+        multiply()
+        assertInputField("3*")
+        input("2")
+        assertInputField("3*2")
+
+        inputDot()
+        assertInputField("3*2.")
+
+        input("1")
+        assertInputField("3*2.1")
+
+        calculate()
+        assertInputField("3*2.1")
+        assertResult("6.3")
     }
 
     @Test
-    fun diff_of_two_numbers() {
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
+    fun final() = with(viewModel){
+        input("1")
+        assertInputField("1")
+        inputDot()
+        assertInputField("1.")
+        minus()
+        assertInputField("1.")
 
-        viewModel.minus()
-        assertEquals("1-", inputFlow.value)
+        multiply()
+        assertInputField("1.")
 
-        viewModel.inputTwo()
-        assertEquals("1-2", inputFlow.value)
+        divide()
+        assertInputField("1.")
 
-        viewModel.calculate()
-        assertEquals("1-2", inputFlow.value)
-        assertEquals("-1", resultFlow.value)
-    }
+        backspace()
+        assertInputField("1")
 
-    @Test
-    fun diff_sign_ahead() {
-        viewModel.minus()
-        assertEquals("-", inputFlow.value)
+        plus()
+        assertInputField("1+")
 
-        viewModel.inputOne()
-        assertEquals("-1", inputFlow.value)
+        repeat(2) {
+            minus()
+            assertInputField("1-")
+        }
 
-        viewModel.minus()
-        assertEquals("-1-", inputFlow.value)
+        repeat(2) {
+            divide()
+            assertInputField("1/")
+        }
 
-        viewModel.inputTwo()
-        assertEquals("-1-2", inputFlow.value)
+        input("2")
+        assertInputField("1/2")
 
-        viewModel.calculate()
-        assertEquals("-1-2", inputFlow.value)
-        assertEquals("-3", resultFlow.value)
-    }
+        inputDot()
+        assertInputField("1/2.")
 
-    @Test
-    fun change_minus_to_plus() {
-        viewModel.minus()
-        assertEquals("-", inputFlow.value)
+        minus()
+        assertInputField("1/2.")
 
-        viewModel.plus()
-        assertEquals("", inputFlow.value)
+        multiply()
+        assertInputField("1/2.")
 
-        viewModel.inputTwo()
-        assertEquals("2", inputFlow.value)
-
-        viewModel.minus()
-        assertEquals("2-", inputFlow.value)
-
-        viewModel.plus()
-        assertEquals("2+", inputFlow.value)
-
-        viewModel.inputOne()
-        assertEquals("2+1", inputFlow.value)
-
-        viewModel.minus()
-        assertEquals("3-", inputFlow.value)
-
-        viewModel.plus()
-        assertEquals("3+", inputFlow.value)
-
-        viewModel.inputZero()
-        assertEquals("3+0", inputFlow.value)
-
-        viewModel.calculate()
-        assertEquals("3+0", inputFlow.value)
-        assertEquals("3", resultFlow.value)
-    }
-
-    @Test
-    fun switch_operation() {
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
-
-        viewModel.plus()
-        assertEquals("1+", inputFlow.value)
-
-        viewModel.minus()
-        assertEquals("1-", inputFlow.value)
-
-        viewModel.inputTwo()
-        assertEquals("1-2", inputFlow.value)
-
-        viewModel.calculate()
-        assertEquals("1-2", inputFlow.value)
-        assertEquals("-1", resultFlow.value)
-    }
-
-    @Test
-    fun clear_all() {
-        viewModel.clearAll()
-
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
-
-        viewModel.clearAll()
-        assertEquals("", inputFlow.value)
-
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
-        viewModel.plus()
-        assertEquals("1+", inputFlow.value)
-
-        viewModel.clearAll()
-        assertEquals("", inputFlow.value)
-
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
-        viewModel.plus()
-        assertEquals("1+", inputFlow.value)
-        viewModel.inputTwo()
-        assertEquals("1+2", inputFlow.value)
-
-        viewModel.clearAll()
-        assertEquals("", inputFlow.value)
-
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
-        viewModel.plus()
-        assertEquals("1+", inputFlow.value)
-        viewModel.inputTwo()
-        assertEquals("1+2", inputFlow.value)
-        viewModel.calculate()
-        assertEquals("1+2", inputFlow.value)
-        assertEquals("3", resultFlow.value)
-
-        viewModel.clearAll()
-        assertEquals("", inputFlow.value)
-        assertEquals("", resultFlow.value)
-
-        viewModel.inputOne()
-        assertEquals("1", inputFlow.value)
-        viewModel.plus()
-        assertEquals("1+", inputFlow.value)
-        viewModel.inputTwo()
-        assertEquals("1+2", inputFlow.value)
-        viewModel.calculate()
-        assertEquals("1+2", inputFlow.value)
-        assertEquals("3", resultFlow.value)
-    }
-}
-
-private class FakeMainRepository(
-    private val base: MainRepository = MainRepository.Base()
-) : MainRepository {
-
-    private var sumCalledCount = 0
-    private var diffCalledCount = 0
-    private var multiplyCalledCount = 0
-    private var divideCalledCount = 0
-
-    override fun sum(left: String, right: String): String {
-        sumCalledCount++
-        return base.sum(left, right)
-    }
-
-    override fun diff(left: String, right: String): String {
-        diffCalledCount++
-        return base.diff(left, right)
-    }
-
-    override fun multiply(left: String, right: String): String {
-        multiplyCalledCount++
-        return base.multiply(left, right)
-    }
-
-    override fun divide(left: String, right: String): String {
-        divideCalledCount++
-        return base.divide(left, right)
-    }
-
-    fun assertSumCalled(expectedTimes: Int) {
-        assertEquals(expectedTimes, sumCalledCount)
-    }
-
-    fun assertDiffCalled(expectedTimes: Int) {
-        assertEquals(expectedTimes, diffCalledCount)
-    }
-
-    fun assertMultiplyCalled(expectedTimes: Int) {
-        assertEquals(expectedTimes, multiplyCalledCount)
+        divide()
+        assertInputField("1/2.")
     }
 
     fun assertDivideCalled(expectedTimes: Int) {
         assertEquals(expectedTimes, divideCalledCount)
+    private fun assertInputField(expected: String) {
+        assertEquals(expected, inputFlow.value)
+    }
+
+    private fun assertResult(expected: String) {
+        assertEquals(expected, resultFlow.value)
     }
 }
