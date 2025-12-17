@@ -1269,4 +1269,32 @@ class ScenarioUiTest {
         divide()
         assertInputField("1/2.")
     }
+
+    @Test
+    fun complex_division() = with(mainPage) {
+        input("1")
+        assertInputField("1")
+        input("4")
+        assertInputField("14")
+        input("4")
+        assertInputField("144")
+        divide()
+        assertInputField("144/")
+        input("7")
+        assertInputField("144/7")
+        calculate()
+        assertInputField("144/7")
+        assertResult("20.5714285714")
+
+        clearAll()
+        input("2")
+        assertInputField("2")
+        divide()
+        assertInputField("2/")
+        input("3")
+        assertInputField("2/3")
+        calculate()
+        assertInputField("2/3")
+        assertResult("0.6666666667")
+    }
 }
